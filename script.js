@@ -1,11 +1,11 @@
-import { doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 let currentUser = null;
 let userData = null;
 const startingCapital = 200000;
 const revenuPourcent = 3; // 3% du prix du bien pour location
+const entretienPourcent = 0.5; // 0.5% du prix des biens
 
-// Biens disponibles
 const boutique = [
     { nom: "Petit appartement", prix: 50000 },
     { nom: "Maison de ville", prix: 120000 },
@@ -14,31 +14,32 @@ const boutique = [
     { nom: "Hôtel particulier", prix: 2500000 }
 ];
 
-// -------------------------------------------
-// LOGIN
-// -------------------------------------------
+// ---------------- LOGIN ----------------
 document.getElementById("loginBtn").addEventListener("click", login);
 
 async function login() {
+    const email = document.getElementById("emailInput").value.trim();
     const username = document.getElementById("usernameInput").value.trim();
-    if (!username) return alert("Entre un nom valide");
+    if (!email || !username) return alert("Email et nom valides requis");
 
     currentUser = username;
     const userRef = doc(db, "joueurs", currentUser);
     const userSnap = await getDoc(userRef);
 
     if (!userSnap.exists()) {
-        // Créer un nouveau joueur
         userData = {
+            email: email,
             capital: startingCapital,
-            biens: []
+            liquidite: startingCapital,
+            biens: [],
+            entreprises: []
         };
         await setDoc(userRef, userData);
     } else {
         userData = userSnap.data();
     }
 
-    // Afficher interface
+    // Affichage interface
     document.getElementById("loginCard").classList.add("hidden");
     document.getElementById("playerCard").classList.remove("hidden");
     document.getElementById("menuCard").classList.remove("hidden");
@@ -46,6 +47,7 @@ async function login() {
 
     updateStats();
     showAccueil();
+    checkDailyUpdate();
 
     // Rendre fonctions globales pour onclick
     window.showBoutique = showBoutique;
@@ -53,32 +55,23 @@ async function login() {
     window.showBanque = showBanque;
     window.showOptions = showOptions;
     window.acheterBien = acheterBien;
-    window.toggleLocation = toggleLocation;
-    window.vendreBien = vendreBien;
     window.louerBien = louerBien;
+    window.vendreBien = vendreBien;
     window.resetGame = resetGame;
     window.logout = logout;
 }
 
-// -------------------------------------------
-// LOGOUT
-// -------------------------------------------
-function logout() {
-    location.reload();
-}
-
-// -------------------------------------------
-// STATS
-// -------------------------------------------
+// ---------------- STATS ----------------
 function updateStats() {
+    document.getElementById("emailDisplay").textContent = userData.email;
     document.getElementById("usernameDisplay").textContent = currentUser;
-    document.getElementById("liquiditeDisplay").textContent = userData.capital.toLocaleString();
+    document.getElementById("capitalDisplay").textContent = userData.capital.toLocaleString();
+    document.getElementById("liquiditeDisplay").textContent = userData.liquidite.toLocaleString();
     document.getElementById("nbBiensDisplay").textContent = userData.biens.length;
+    document.getElementById("nbEntreprisesDisplay").textContent = userData.entreprises.length;
 }
 
-// -------------------------------------------
-// AFFICHAGE PAGES
-// -------------------------------------------
+// ---------------- CONTENU ----------------
 function setContent(html) {
     document.getElementById("content").innerHTML = html;
 }
@@ -87,7 +80,6 @@ function showAccueil() {
     setContent("<h2>Bienvenue dans Empire Des Finances</h2><p>Commence par acheter un bien pour lancer ton empire.</p>");
 }
 
-// --- Boutique ---
 function showBoutique() {
     let html = `<h2>Boutique</h2>`;
     boutique.forEach((b, i) => {
@@ -102,7 +94,6 @@ function showBoutique() {
     setContent(html);
 }
 
-// --- Mes Propriétés ---
 function showMesProprietes() {
     if (userData.biens.length === 0) {
         setContent("<h2>Mes Propriétés</h2><p>Tu ne possèdes encore aucun bien.</p>");
@@ -124,23 +115,14 @@ function showMesProprietes() {
     setContent(html);
 }
 
-// --- Banque ---
-function showBanque() {
-    setContent("<h2>Banque</h2><p>Fonctionnalités bancaires à venir.</p>");
-}
+function showBanque() { setContent("<h2>Banque</h2><p>Fonctionnalités bancaires à venir.</p>"); }
+function showOptions() { setContent(`<h2>Options</h2><button class="btn" onclick="resetGame()">Réinitialiser le jeu</button>`); }
 
-// --- Options ---
-function showOptions() {
-    setContent(`<h2>Options</h2><button class="btn" onclick="resetGame()">Réinitialiser le jeu</button>`);
-}
-
-// -------------------------------------------
-// ACTIONS
-// -------------------------------------------
+// ---------------- ACTIONS ----------------
 async function acheterBien(index) {
     const item = boutique[index];
-    if (userData.capital < item.prix) return alert("Pas assez d'argent !");
-    userData.capital -= item.prix;
+    if (userData.liquidite < item.prix) return alert("Pas assez de liquidités !");
+    userData.liquidite -= item.prix;
     userData.biens.push({ nom: item.nom, prix: item.prix, enLocation: false });
     await saveUser();
     updateStats();
@@ -151,7 +133,7 @@ async function vendreBien(index) {
     const bien = userData.biens[index];
     if (!confirm(`Vendre ${bien.nom} pour 80% du prix ?`)) return;
     const prixVente = Math.floor(bien.prix * 0.8);
-    userData.capital += prixVente;
+    userData.liquidite += prixVente;
     userData.biens.splice(index, 1);
     await saveUser();
     updateStats();
@@ -161,29 +143,54 @@ async function vendreBien(index) {
 async function louerBien(index) {
     const bien = userData.biens[index];
     if (bien.enLocation) return alert("Ce bien est déjà loué !");
-    const revenu = Math.floor(bien.prix * (revenuPourcent / 100));
-    userData.capital += revenu;
+    const revenu = Math.floor(bien.prix * (revenuPourcent/100));
+    userData.liquidite += revenu;
     bien.enLocation = true;
     await saveUser();
     updateStats();
     showMesProprietes();
 }
 
-// -------------------------------------------
-// SAUVEGARDE
-// -------------------------------------------
+// ---------------- REVENUS & ENTRETIEN ----------------
+async function checkDailyUpdate() {
+    const now = new Date();
+    const parisTime = now.toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
+    const parisDate = new Date(parisTime);
+    const lastUpdate = localStorage.getItem("lastUpdate");
+
+    if (!lastUpdate || new Date(lastUpdate).getDate() !== parisDate.getDate()) {
+        // Revenu location
+        let totalRevenu = 0;
+        userData.biens.forEach(b => {
+            if (b.enLocation) totalRevenu += Math.floor(b.prix * (revenuPourcent/100));
+        });
+
+        // Entretien 0.5%
+        let totalEntretien = 0;
+        userData.biens.forEach(b => totalEntretien += Math.floor(b.prix * (entretienPourcent/100)));
+
+        userData.liquidite += totalRevenu - totalEntretien;
+        await saveUser();
+        updateStats();
+        localStorage.setItem("lastUpdate", parisDate.toString());
+    }
+
+    // Vérifie à nouveau dans 1h
+    setTimeout(checkDailyUpdate, 1000*60*60);
+}
+
+// ---------------- SAUVEGARDE ----------------
 async function saveUser() {
     const userRef = doc(window.db, "joueurs", currentUser);
     await setDoc(userRef, userData);
 }
 
-// -------------------------------------------
-// RESET
-// -------------------------------------------
+// ---------------- RESET ----------------
 function resetGame() {
     if (!confirm("Réinitialiser le jeu ?")) return;
-    userData = { capital: startingCapital, biens: [] };
+    userData = { email: userData.email, capital: startingCapital, liquidite: startingCapital, biens: [], entreprises: [] };
     saveUser();
     updateStats();
     showAccueil();
 }
+function logout() { location.reload(); }
