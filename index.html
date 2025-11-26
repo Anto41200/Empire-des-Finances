@@ -1,41 +1,43 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Empire Immo — Jeu de Gestion</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Empire des Finances</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
+<header>
+  <div class="brand">Empire des Finances</div>
+  <div class="top-stats">
+    <span>Liquidité : <b id="liquiditeDisplay">0 €</b></span>
+    <span>Patrimoine : <b id="patrimoineDisplay">0 €</b></span>
+    <span>Dette : <b id="detteDisplay">0 €</b></span>
+  </div>
+</header>
 
-<header>Empire Immo — Gestion Immobilière</header>
+<div id="app">
+  <nav id="sidebar">
+    <button onclick="showHome()">Accueil</button>
+    <button onclick="showBoutique()">🏬 Boutique</button>
+    <button onclick="showProprietes()">🏠 Mes Propriétés</button>
+    <button onclick="showBanque()">🏦 Banque</button>
+    <button onclick="showTableau()">📊 Finances</button>
+    <button onclick="showOptions()">⚙️ Options</button>
+  </nav>
 
-<div id="container">
-
-    <!-- Informations du joueur -->
-    <div class="card">
-        <h2>Informations du Joueur</h2>
-        <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
-        <p><b>Liquidité :</b> <span id="liquiditeDisplay"></span> €</p>
-        <p><b>Biens possédés :</b> <span id="nbBiensDisplay"></span></p>
-    </div>
-
-    <!-- Menu principal -->
-    <div class="card">
-        <h2>Menu</h2>
-        <button class="btn" onclick="showBoutique()">Boutique</button>
-        <button class="btn" onclick="showMesProprietes()">Mes Propriétés</button>
-        <button class="btn" onclick="showBanque()">Banque</button>
-        <button class="btn" onclick="showOptions()">Options</button>
-    </div>
-
-    <!-- Zone de contenu dynamique -->
-    <div id="content" class="card">
-        <h2>Bienvenue dans Empire Immo</h2>
-        <p>Commence par acheter un bien pour lancer ton empire immobilier.</p>
-    </div>
-
+  <main id="main">
+    <section id="content">
+      <h1>Bienvenue</h1>
+      <p>Commence ton empire avec <strong>200 000 €</strong>. Va dans Boutique pour acheter ton premier bien.</p>
+      <div class="hint">Astuce : pour test, utilise "Avancer d'un jour" dans Options.</div>
+    </section>
+  </main>
 </div>
+
+<footer>
+  <small>Empire des Finances — Prototype • Données stockées localement</small>
+</footer>
 
 <script src="script.js"></script>
 </body>
