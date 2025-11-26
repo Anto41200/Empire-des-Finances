@@ -15,6 +15,7 @@
     <!-- Login -->
     <div class="card" id="loginCard">
         <h2>Connexion</h2>
+        <input type="email" id="emailInput" placeholder="Email">
         <input type="text" id="usernameInput" placeholder="Nom du joueur">
         <button class="btn" id="loginBtn">Se connecter</button>
     </div>
@@ -22,9 +23,12 @@
     <!-- Infos joueur -->
     <div class="card hidden" id="playerCard">
         <h2>Informations du Joueur</h2>
+        <p><b>Email :</b> <span id="emailDisplay"></span></p>
         <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
-        <p><b>Capital :</b> <span id="liquiditeDisplay"></span> €</p>
-        <p><b>Biens possédés :</b> <span id="nbBiensDisplay"></span></p>
+        <p><b>Capital :</b> <span id="capitalDisplay"></span> €</p>
+        <p><b>Liquidités :</b> <span id="liquiditeDisplay"></span> €</p>
+        <p><b>Biens :</b> <span id="nbBiensDisplay"></span></p>
+        <p><b>Entreprises :</b> <span id="nbEntreprisesDisplay"></span></p>
         <button class="btn" onclick="logout()">Se déconnecter</button>
     </div>
 
@@ -48,7 +52,7 @@
 <!-- Firebase -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBAuJkFTlYHoKyZiHiAAi-VxcNpZ-FAA9k",
@@ -61,8 +65,7 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-
-    window.db = db; // rendre global pour script.js
+    window.db = db;
 </script>
 
 <script type="module" src="script.js"></script>
