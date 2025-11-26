@@ -1,9 +1,4 @@
-/* =====================================================
-   EMPIRE IMMO — STYLE GLOBAL
-   Thème : Luxe Immobilier / Blanc / Or / Gris Anthracite
-===================================================== */
-
-/* ----------- Général ----------- */
+/* ================== STYLE GLOBAL ================== */
 
 * {
     margin: 0;
@@ -18,8 +13,7 @@ body {
     padding-bottom: 40px;
 }
 
-/* ----------- En-tête ----------- */
-
+/* -------- En-tête -------- */
 header {
     background: linear-gradient(135deg, #0f172a, #1e293b);
     color: white;
@@ -32,16 +26,14 @@ header {
     box-shadow: 0 3px 15px rgba(0,0,0,0.25);
 }
 
-/* ----------- Conteneur principal ----------- */
-
+/* -------- Conteneur principal -------- */
 #container {
     max-width: 1100px;
     margin: auto;
     padding: 20px;
 }
 
-/* ----------- Cartes ----------- */
-
+/* -------- Cartes -------- */
 .card {
     background: white;
     border-radius: 12px;
@@ -62,11 +54,10 @@ header {
     font-size: 22px;
 }
 
-/* ----------- Boutons ----------- */
-
+/* -------- Boutons -------- */
 .btn {
     padding: 10px 15px;
-    background: #2563eb;       /* bleu royal */
+    background: #2563eb;
     color: white;
     border: none;
     border-radius: 6px;
@@ -84,76 +75,27 @@ header {
     transform: scale(0.97);
 }
 
-/* --------- Variantes de boutons --------- */
+/* Boutons rouges/verts optionnels */
+.btn-red { background: #dc2626; }
+.btn-red:hover { background: #b91c1c; }
+.btn-green { background: #16a34a; }
+.btn-green:hover { background: #15803d; }
 
-.btn-red {
-    background: #dc2626;
-}
+/* Titres et contenu */
+h2 { margin-bottom: 10px; font-size: 26px; color: #0f172a; }
+#content p { font-size: 16px; margin-top: 5px; line-height: 1.6; }
 
-.btn-red:hover {
-    background: #b91c1c;
-}
+/* Valeurs joueurs */
+#liquiditeDisplay { font-weight: bold; color: #047857; }
+#nbBiensDisplay { font-weight: bold; color: #1e3a8a; }
 
-.btn-green {
-    background: #16a34a;
-}
+/* Animation légère */
+@keyframes fadeIn { from {opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+#content { animation: fadeIn 0.4s ease-in-out; }
 
-.btn-green:hover {
-    background: #15803d;
-}
-
-/* ----------- Titres ----------- */
-
-h2 {
-    margin-bottom: 10px;
-    font-size: 26px;
-    color: #0f172a;
-}
-
-/* ----------- Zone de contenu ----------- */
-
-#content p {
-    font-size: 16px;
-    margin-top: 5px;
-    line-height: 1.6;
-}
-
-/* ----------- Valeurs (argent, etc.) ----------- */
-
-#liquiditeDisplay {
-    font-weight: bold;
-    color: #047857;
-}
-
-#nbBiensDisplay {
-    font-weight: bold;
-    color: #1e3a8a;
-}
-
-/* ----------- Animation légère ----------- */
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-#content {
-    animation: fadeIn 0.4s ease-in-out;
-}
-
-/* ----------- Responsive ----------- */
-
+/* Responsive */
 @media (max-width: 700px) {
-    header {
-        font-size: 22px;
-    }
-
-    .card {
-        padding: 15px;
-    }
-
-    .btn {
-        width: 100%;
-        margin-top: 8px;
-    }
+    header { font-size: 22px; }
+    .card { padding: 15px; }
+    .btn { width: 100%; margin-top: 8px; }
 }
