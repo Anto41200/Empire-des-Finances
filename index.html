@@ -1,241 +1,71 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Empire Immo — Gestion Immobilière</title>
-
-<style>
-* { margin:0; padding:0; box-sizing:border-box; font-family: "Montserrat", Arial, sans-serif;}
-body { background:#f5f5f7; color:#1e1e1e; padding-bottom:40px;}
-header { background: linear-gradient(135deg,#0f172a,#1e293b); color:white; padding:20px; text-align:center; font-size:30px; font-weight:700; letter-spacing:1px; text-transform:uppercase; box-shadow:0 3px 15px rgba(0,0,0,0.25);}
-#container { max-width:1100px; margin:auto; padding:20px;}
-.card { background:white; border-radius:12px; padding:20px; margin-bottom:20px; box-shadow:0 3px 10px rgba(0,0,0,0.12); transition:0.3s;}
-.card:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,0,0,0.18);}
-.card h3 { margin-bottom:10px; color:#1e293b; font-size:22px;}
-.btn { padding:10px 15px; background:#2563eb; color:white; border:none; border-radius:6px; font-size:15px; cursor:pointer; transition:0.25s; margin:3px;}
-.btn:hover { background:#1e40af;}
-.btn:active { transform:scale(0.97);}
-h2 { margin-bottom:10px; font-size:26px; color:#0f172a;}
-#content p { font-size:16px; margin-top:5px; line-height:1.6;}
-#liquiditeDisplay { font-weight:bold; color:#047857;}
-#nbBiensDisplay { font-weight:bold; color:#1e3a8a;}
-@keyframes fadeIn { from {opacity:0; transform:translateY(8px);} to {opacity:1; transform:translateY(0);} }
-#content { animation: fadeIn 0.4s ease-in-out;}
-@media(max-width:700px){ header{font-size:22px;} .card{padding:15px;} .btn{width:100%; margin-top:8px;}}
-input{padding:8px; width:100%; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empire Des Finances</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>Empire Immo — Gestion Immobilière</header>
+<header>Empire Des Finances</header>
 
 <div id="container">
-    <!-- Login / inscription -->
-    <div id="loginCard" class="card">
-        <h2>Connexion / Inscription</h2>
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="Mot de passe">
-        <button class="btn" onclick="login()">Se connecter / S'inscrire</button>
-        <p id="loginMsg"></p>
+
+    <!-- Login -->
+    <div class="card" id="loginCard">
+        <h2>Connexion</h2>
+        <input type="text" id="usernameInput" placeholder="Nom du joueur">
+        <button class="btn" id="loginBtn">Se connecter</button>
     </div>
 
-    <!-- UI jeu -->
-    <div id="gameUI" class="hidden">
-        <!-- Infos joueur -->
-        <div class="card">
-            <h2>Informations du Joueur</h2>
-            <p><b>Email :</b> <span id="usernameDisplay"></span></p>
-            <p><b>Liquidité :</b> <span id="liquiditeDisplay"></span> §</p>
-            <p><b>Biens possédés :</b> <span id="nbBiensDisplay"></span></p>
-        </div>
-
-        <!-- Menu -->
-        <div class="card">
-            <h2>Menu</h2>
-            <button class="btn" onclick="showBoutique()">Boutique</button>
-            <button class="btn" onclick="showMesProprietes()">Mes Propriétés</button>
-            <button class="btn" onclick="showBanque()">Banque</button>
-            <button class="btn" onclick="showOptions()">Options</button>
-            <button class="btn" onclick="logout()">Déconnexion</button>
-        </div>
-
-        <!-- Zone contenu -->
-        <div id="content" class="card">
-            <h2>Bienvenue dans Empire Immo</h2>
-            <p>Commence par acheter un bien pour lancer ton empire immobilier.</p>
-        </div>
+    <!-- Infos joueur -->
+    <div class="card hidden" id="playerCard">
+        <h2>Informations du Joueur</h2>
+        <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
+        <p><b>Capital :</b> <span id="liquiditeDisplay"></span> €</p>
+        <p><b>Biens possédés :</b> <span id="nbBiensDisplay"></span></p>
+        <button class="btn" onclick="logout()">Se déconnecter</button>
     </div>
+
+    <!-- Menu -->
+    <div class="card hidden" id="menuCard">
+        <h2>Menu</h2>
+        <button class="btn" onclick="showBoutique()">Boutique</button>
+        <button class="btn" onclick="showMesProprietes()">Mes Propriétés</button>
+        <button class="btn" onclick="showBanque()">Banque</button>
+        <button class="btn" onclick="showOptions()">Options</button>
+    </div>
+
+    <!-- Zone dynamique -->
+    <div id="content" class="card hidden">
+        <h2>Bienvenue dans Empire Des Finances</h2>
+        <p>Connecte-toi pour commencer à gérer ton empire.</p>
+    </div>
+
 </div>
 
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-// Config Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyBAuJkFTlYHoKyZiHiAAi-VxcNpZ-FAA9k",
-    authDomain: "empire-des-finances.firebaseapp.com",
-    projectId: "empire-des-finances",
-    storageBucket: "empire-des-finances.firebasestorage.app",
-    messagingSenderId: "276513960656",
-    appId: "1:276513960656:web:b4440b88b797a4a6fa64d5",
-    measurementId: "G-2FFFNKS95D"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyBAuJkFTlYHoKyZiHiAAi-VxcNpZ-FAA9k",
+      authDomain: "empire-des-finances.firebaseapp.com",
+      projectId: "empire-des-finances",
+      storageBucket: "empire-des-finances.appspot.com",
+      messagingSenderId: "276513960656",
+      appId: "1:276513960656:web:b4440b88b797a4a6fa64d5"
+    };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-let currentUserData = null;
-
-// Boutique
-const boutique = [
-    { nom:"Petit appartement", prix:50000 },
-    { nom:"Maison de ville", prix:120000 },
-    { nom:"Immeuble locatif", prix:350000 },
-    { nom:"Villa de luxe", prix:800000 },
-    { nom:"Hôtel particulier", prix:2500000 }
-];
-
-// Connexion / inscription
-async function login(){
-    const email=document.getElementById("email").value;
-    const password=document.getElementById("password").value;
-    const msg=document.getElementById("loginMsg");
-    if(!email || !password){ msg.textContent="Remplis tous les champs."; return; }
-
-    try{ await signInWithEmailAndPassword(auth,email,password); }
-    catch{ 
-        try{ await createUserWithEmailAndPassword(auth,email,password); }
-        catch(e){ msg.textContent=e.message; return; }
-    }
-
-    const userDoc=doc(db,"users",email);
-    const docSnap=await getDoc(userDoc);
-    if(!docSnap.exists()){
-        await setDoc(userDoc,{ liquidite:200000, biens:[], lastUpdate: new Date().toISOString() });
-        currentUserData={ liquidite:200000, biens:[], lastUpdate: new Date().toISOString() };
-    }else{
-        currentUserData=docSnap.data();
-        applyDailyRevenue();
-    }
-
-    document.getElementById("loginCard").classList.add("hidden");
-    document.getElementById("gameUI").classList.remove("hidden");
-    document.getElementById("usernameDisplay").textContent=email;
-
-    updateStats();
-}
-
-// Déconnexion
-function logout(){ auth.signOut(); location.reload(); }
-
-// Sauvegarde
-async function saveGame(){ if(!auth.currentUser) return; await setDoc(doc(db,"users",auth.currentUser.email),currentUserData); }
-
-// Stats
-function updateStats(){
-    document.getElementById("liquiditeDisplay").textContent=currentUserData.liquidite.toLocaleString();
-    document.getElementById("nbBiensDisplay").textContent=currentUserData.biens.length;
-}
-
-// Revenus journaliers 3% des biens loués
-function applyDailyRevenue(){
-    const now=new Date();
-    const last=new Date(currentUserData.lastUpdate);
-    const diffDays=Math.floor((now-last)/(1000*60*60*24));
-    if(diffDays<1) return;
-    let totalRevenue=0;
-    currentUserData.biens.forEach(b=>{
-        if(b.loue) totalRevenue+=Math.floor(b.prix*0.03*diffDays);
-    });
-    currentUserData.liquidite+=totalRevenue;
-    currentUserData.lastUpdate=now.toISOString();
-    saveGame();
-}
-
-// Affichage boutique
-function showBoutique(){
-    let html="<h2>Boutique</h2>";
-    boutique.forEach((b,i)=>{
-        html+=`<div class="card">
-        <h3>${b.nom}</h3>
-        <p>Prix : ${b.prix.toLocaleString()} §</p>
-        <button class="btn" onclick="acheterBien(${i})">Acheter</button>
-        </div>`;
-    });
-    document.getElementById("content").innerHTML=html;
-}
-
-// Acheter
-function acheterBien(i){
-    const bien=boutique[i];
-    if(currentUserData.liquidite<bien.prix){ alert("Pas assez de fonds"); return; }
-    currentUserData.liquidite-=bien.prix;
-    currentUserData.biens.push({ nom:bien.nom, prix:bien.prix, loue:false });
-    saveGame(); updateStats(); showMesProprietes();
-}
-
-// Affichage propriétés
-function showMesProprietes(){
-    let html="<h2>Mes Propriétés</h2>";
-    if(currentUserData.biens.length===0){ html+="<p>Aucun bien.</p>"; document.getElementById("content").innerHTML=html; return; }
-
-    currentUserData.biens.forEach((b,i)=>{
-        html+=`<div class="card">
-        <h3>${b.nom}</h3>
-        <p>Valeur : ${b.prix.toLocaleString()} §</p>
-        <p>Location : ${b.loue?"✔ Loué":"❌ Non loué"}</p>
-        <button class="btn" onclick="toggleLocation(${i})">${b.loue?"Arrêter la location":"Louer"} (3%/jour)</button>
-        <button class="btn" onclick="vendreBien(${i})">Vendre</button>
-        </div>`;
-    });
-    document.getElementById("content").innerHTML=html;
-}
-
-// Louer / arrêter location
-function toggleLocation(i){
-    const bien=currentUserData.biens[i];
-    bien.loue=!bien.loue;
-    saveGame(); updateStats(); showMesProprietes();
-}
-
-// Vendre
-function vendreBien(i){
-    if(!confirm("Vendre ce bien ?")) return;
-    const bien=currentUserData.biens[i];
-    currentUserData.liquidite+=Math.floor(bien.prix*0.8);
-    currentUserData.biens.splice(i,1);
-    saveGame(); updateStats(); showMesProprietes();
-}
-
-// Banque
-function showBanque(){ document.getElementById("content").innerHTML="<h2>Banque</h2><p>Fonctions bancaires à venir...</p>"; }
-
-// Options
-function showOptions(){ document.getElementById("content").innerHTML="<h2>Options</h2><button class='btn' onclick='resetGame()'>Réinitialiser le jeu</button>"; }
-
-// Reset
-function resetGame(){
-    if(confirm("Tout réinitialiser ?")){
-        currentUserData={ liquidite:200000, biens:[], lastUpdate:new Date().toISOString() };
-        saveGame(); updateStats(); showMesProprietes();
-    }
-}
-window.acheterBien = acheterBien;
-window.toggleLocation = toggleLocation;
-window.vendreBien = vendreBien;
-window.showMesProprietes = showMesProprietes;
-window.showBoutique = showBoutique;
-window.showBanque = showBanque;
-window.showOptions = showOptions;
-window.resetGame = resetGame;
-window.logout = logout;
-
+    window.db = db; // rendre global pour script.js
 </script>
+
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
