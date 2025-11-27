@@ -1,154 +1,74 @@
-/* style.css - Empire des Finances */
-:root{
-  --bg:#f4f6f8;
-  --card:#ffffff;
-  --accent:#2563eb;
-  --accent-hover:#1d4ed8;
-  --muted:#6b7280;
-  --danger:#dc2626;
-  --header-bg: linear-gradient(90deg,#0f172a,#1e293b);
-  --shadow: 0 4px 20px rgba(0,0,0,0.08);
-  --radius: 12px;
-}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empire Des Finances</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',system-ui,Arial,sans-serif;}
-body{background:var(--bg);color:#0f172a;line-height:1.5;font-size:16px;}
-h2,h3{margin-bottom:12px;color:#111827;}
-input{width:100%;padding:10px 12px;margin-bottom:12px;border:1px solid #d1d5db;border-radius:var(--radius);outline:none;transition:0.2s;}
-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.2);}
-button{transition:0.2s;}
-button:focus{outline:none;}
+<header>Empire Des Finances</header>
 
-/* Header */
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px 24px;
-  background:var(--header-bg);
-  color:#fff;
-  font-weight:700;
-  font-size:20px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.1);
-}
+<div id="container">
 
-/* Container layout */
-#container{
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-  padding:24px;
-  max-width:1100px;
-  margin:0 auto;
-}
+    <!-- Login -->
+    <div class="card" id="loginCard">
+        <h2>Connexion</h2>
+        <input type="email" id="emailInput" placeholder="Email">
+        <input type="text" id="usernameInput" placeholder="Nom du joueur">
+        <button class="btn" id="loginBtn">Se connecter</button>
+    </div>
 
-/* Cards */
-.card{
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:20px;
-  box-shadow:var(--shadow);
-  transition:transform 0.2s, box-shadow 0.2s;
-}
-.card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.1);}
-.hidden{display:none;}
+    <!-- Infos joueur -->
+    <div class="card hidden" id="playerCard">
+        <h2>Informations du Joueur</h2>
+        <p><b>Email :</b> <span id="emailDisplay"></span></p>
+        <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
+        <p><b>Capital :</b> <span id="capitalDisplay"></span> €</p>
+        <p><b>Liquidités :</b> <span id="liquiditeDisplay"></span> €</p>
+        <p><b>Biens :</b> <span id="nbBiensDisplay"></span></p>
+        <p><b>Entreprises :</b> <span id="nbEntreprisesDisplay"></span></p>
+        <button class="btn" onclick="logout()">Se déconnecter</button>
+    </div>
 
-/* Buttons */
-.btn{
-  display:inline-block;
-  background:var(--accent);
-  color:#fff;
-  padding:10px 16px;
-  border-radius:var(--radius);
-  border:none;
-  cursor:pointer;
-  font-weight:500;
-  transition: background 0.2s, transform 0.2s;
-}
-.btn:hover{background:var(--accent-hover);transform:translateY(-1px);}
-.btn.alt{background:#374151;color:#fff;}
-.btn.alt:hover{background:#4b5563;}
+    <!-- Menu -->
+    <div class="card hidden" id="menuCard">
+        <h2>Menu</h2>
+        <button class="btn" onclick="showBoutique()">Boutique</button>
+        <button class="btn" onclick="showMesProprietes()">Mes Propriétés</button>
+        <button class="btn" onclick="showBanque()">Banque</button>
+        <button class="btn" onclick="showOptions()">Options</button>
+    </div>
 
-/* Badge & hint */
-.badge{
-  background:#eef2ff;
-  color:var(--accent);
-  padding:4px 10px;
-  border-radius:999px;
-  font-size:12px;
-}
-.hint,.small{color:var(--muted);font-size:13px;}
+    <!-- Zone dynamique -->
+    <div id="content" class="card hidden">
+        <h2>Bienvenue dans Empire Des Finances</h2>
+        <p>Connecte-toi pour commencer à gérer ton empire.</p>
+    </div>
 
-/* Alerts */
-.alert{
-  background:#fff3f2;
-  border:1px solid rgba(220,38,38,0.08);
-  color:var(--danger);
-  padding:10px;
-  border-radius:var(--radius);
-}
+</div>
 
-/* Grid layout */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:16px;
-}
+<!-- Firebase -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-/* Table */
-.table{
-  width:100%;
-  border-collapse:collapse;
-}
-.table th,.table td{
-  padding:10px;
-  border-bottom:1px solid #e5e7eb;
-  text-align:left;
-}
+    const firebaseConfig = {
+      apiKey: "AIzaSyBAuJkFTlYHoKyZiHiAAi-VxcNpZ-FAA9k",
+      authDomain: "empire-des-finances.firebaseapp.com",
+      projectId: "empire-des-finances",
+      storageBucket: "empire-des-finances.appspot.com",
+      messagingSenderId: "276513960656",
+      appId: "1:276513960656:web:b4440b88b797a4a6fa64d5"
+    };
 
-/* Sidebar (optional future) */
-#sidebar{
-  width:220px;
-  background:#0b1220;
-  color:#fff;
-  padding:18px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-#sidebar button{
-  background:transparent;
-  border:1px solid rgba(255,255,255,0.06);
-  color:#fff;
-  padding:10px;
-  border-radius:var(--radius);
-  text-align:left;
-  cursor:pointer;
-}
-#sidebar button:hover{background:rgba(255,255,255,0.05);}
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    window.db = db;
+</script>
 
-/* Form controls */
-.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+<script type="module" src="script.js"></script>
 
-/* Utility */
-.right{margin-left:auto;}
-.footer-note{font-size:12px;color:var(--muted);margin-top:8px;}
-
-/* Embellissement */
-.embelli-badge{
-  background: #d1fae5;
-  color: #065f46;
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-left: 6px;
-}
-
-/* Responsive */
-@media(max-width:900px){
-  #sidebar{display:none;}
-  header{flex-direction:column;align-items:flex-start;gap:10px;}
-  #container{padding:16px;}
-  .grid{grid-template-columns:1fr;}
-}
+</body>
+</html>
