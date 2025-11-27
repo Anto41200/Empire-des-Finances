@@ -1,179 +1,92 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Empire des Finances</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Empire Des Finances</title>
+<link rel="stylesheet" href="style.css" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 </head>
 <body>
-
 <header>
-  Empire des Finances
+  <div class="header-left">Empire Des Finances</div>
+  <div class="header-right" id="userHeader"></div>
 </header>
 
-<nav class="controls">
-  <button class="btn" onclick="showPage('home')">Accueil</button>
-  <button class="btn" onclick="showPage('entreprises')">Entreprises</button>
-  <button class="btn" onclick="showPage('biens')">Biens</button>
-  <button class="btn" onclick="showPage('democratie')">Démocratie</button>
-  <button class="btn" id="login-btn">Connexion Google</button>
-</nav>
-
 <div id="container">
-
-  <!-- Page Accueil -->
-  <div id="home" class="page card">
-    <h2>Bienvenue</h2>
-    <p>Votre patrimoine : <span id="patrimoine">§0</span></p>
-    <div class="grid" id="historique"></div>
+  <!-- Login -->
+  <div class="card" id="loginCard">
+    <h2>Connexion</h2>
+    <input id="emailInput" type="email" placeholder="Email (servira d'ID)"/>
+    <input id="usernameInput" type="text" placeholder="Nom du joueur (affiché)"/>
+    <div class="controls">
+      <button class="btn" id="loginBtn">Se connecter / Créer compte</button>
+      <button class="btn alt" id="googleLoginBtn">Connexion Google</button>
+    </div>
+    <p class="small">Les données sont sauvegardées dans Firebase Firestore.</p>
   </div>
 
-  <!-- Page Biens -->
-  <div id="biens" class="page card hidden">
-    <h2>Vos Biens</h2>
-    <div class="grid" id="liste-biens"></div>
+  <!-- Player info -->
+  <div class="card hidden" id="playerCard">
+    <h2>Informations du Joueur</h2>
+    <p><b>Email :</b> <span id="emailDisplay"></span></p>
+    <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
+    <p><b>Capital :</b> <span id="capitalDisplay"></span> €</p>
+    <p><b>Liquidités :</b> <span id="liquiditeDisplay"></span> €</p>
+    <p><b>Biens :</b> <span id="nbBiensDisplay"></span></p>
+    <p><b>Entreprises :</b> <span id="nbEntreprisesDisplay"></span></p>
+    <div class="controls">
+      <button class="btn" onclick="logout()">Se déconnecter</button>
+    </div>
   </div>
 
-  <!-- Page Entreprises -->
-  <div id="entreprises" class="page card hidden">
-    <h2>Acheter une Entreprise</h2>
-    <div class="grid" id="liste-entreprises"></div>
+  <!-- Menu -->
+  <div class="card hidden" id="menuCard">
+    <h2>Menu</h2>
+    <div class="controls">
+      <button class="btn" onclick="showAccueil()">Accueil</button>
+      <button class="btn" onclick="showProprietes()">Propriétés</button>
+      <button class="btn" onclick="showDepenses()">Dépenses</button>
+      <button class="btn" onclick="showEntreprises()">Entreprises</button>
+      <button class="btn" onclick="showBanque()">Banque</button>
+      <button class="btn" onclick="showFinances()">Finances</button>
+      <button class="btn" onclick="showOptions()">Options</button>
+      <button class="btn" onclick="showDemocratie()">Démocratie</button>
+      <button class="btn" onclick="showChat()">Chat</button>
+    </div>
   </div>
 
-  <!-- Page Démocratie -->
-  <div id="democratie" class="page card hidden">
-    <h2>Démocratie</h2>
-    <p>Page vide pour futurs contenus.</p>
+  <!-- dynamic content -->
+  <div id="content" class="card hidden">
+    <h2>Bienvenue dans Empire Des Finances</h2>
+    <p>Connecte-toi pour démarrer. 1 mois = 4h réelles (1 jour ≈ 8 min)</p>
   </div>
-
 </div>
 
-<script>
-// ==========================
-// Firebase config
-// ==========================
-const firebaseConfig = {
-  apiKey: "VOTRE_API_KEY",
-  authDomain: "VOTRE_DOMAINE.firebaseapp.com",
-  databaseURL: "https://VOTRE_DOMAINE.firebaseio.com",
-  projectId: "VOTRE_PROJECT_ID",
-  storageBucket: "VOTRE_DOMAINE.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.database();
+<!-- Firebase init -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
-// ==========================
-// Google Login
-// ==========================
-const loginBtn = document.getElementById('login-btn');
-let currentUser = null;
+  const firebaseConfig = {
+    apiKey: "AIzaSyBAuJkFTlYHoKyZiHiAAi-VxcNpZ-FAA9k",
+    authDomain: "empire-des-finances.firebaseapp.com",
+    projectId: "empire-des-finances",
+    storageBucket: "empire-des-finances.appspot.com",
+    messagingSenderId: "276513960656",
+    appId: "1:276513960656:web:b4440b88b797a4a6fa64d5"
+  };
 
-loginBtn.onclick = () => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider)
-    .then((result) => {
-      currentUser = result.user;
-      loginBtn.textContent = "Connecté : " + currentUser.displayName;
-      loadUserData();
-    });
-};
-
-// Persistance session
-auth.onAuthStateChanged(user => {
-  if(user){
-    currentUser = user;
-    loginBtn.textContent = "Connecté : " + currentUser.displayName;
-    loadUserData();
-  }
-});
-
-// ==========================
-// Pages navigation
-// ==========================
-function showPage(pageId){
-  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-  document.getElementById(pageId).classList.remove('hidden');
-}
-
-// ==========================
-// Données biendes et entreprises
-// ==========================
-const biens = [
-  {name:"Maison", icon:"🏠", prix:5000},
-  {name:"Voiture", icon:"🚗", prix:2000},
-  {name:"Château", icon:"🏰", prix:20000}
-];
-
-const entreprises = [
-  {name:"Agriculture", icon:"🌾", prix:10000},
-  {name:"Commerce", icon:"🏪", prix:15000},
-  {name:"Industrie", icon:"🏭", prix:30000},
-  {name:"Technologie", icon:"💻", prix:50000}
-];
-
-// ==========================
-// Affichage biens / entreprises
-// ==========================
-function displayItems(items, containerId){
-  const container = document.getElementById(containerId);
-  container.innerHTML = "";
-  items.forEach(item => {
-    const div = document.createElement('div');
-    div.className = "item-card card";
-    div.innerHTML = `<div class="icon">${item.icon}</div>
-                     <h3>${item.name}</h3>
-                     <p>Prix : §${item.prix}</p>
-                     <button class="btn" onclick="acheter('${item.name}')">Acheter</button>`;
-    container.appendChild(div);
-  });
-}
-
-displayItems(biens, "liste-biens");
-displayItems(entreprises, "liste-entreprises");
-
-// ==========================
-// Acheter bien / entreprise
-// ==========================
-function acheter(name){
-  if(!currentUser){
-    alert("Connectez-vous d'abord !");
-    return;
-  }
-  alert("Vous avez acheté : " + name);
-  // Ici tu peux ajouter la logique pour stocker dans Firebase le bien ou entreprise
-}
-
-// ==========================
-// Patrimoine historique (exemple graphique simple)
-// ==========================
-function loadUserData(){
-  if(!currentUser) return;
-  db.ref('users/'+currentUser.uid+'/patrimoine').once('value').then(snap=>{
-    const val = snap.val() || 0;
-    document.getElementById('patrimoine').textContent = "§" + val;
-    displayHistorique([val]);
-  });
-}
-
-function displayHistorique(data){
-  const hist = document.getElementById('historique');
-  hist.innerHTML = "";
-  data.forEach((val,i)=>{
-    const div = document.createElement('div');
-    div.className = "badge";
-    div.textContent = `Jour ${i+1} : §${val}`;
-    hist.appendChild(div);
-  });
-}
-
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  window.db = db;
+  window.auth = auth;
+  window.GoogleAuthProvider = GoogleAuthProvider;
 </script>
+
+<script type="module" src="script.js"></script>
 </body>
 </html>
+
