@@ -1,205 +1,216 @@
-/* =======================
-   RESET ET BASE
-======================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+/* style.css - Empire des Finances Noble Edition */
+
+:root {
+    --bg: #f0f2f5;
+    --header-bg: #1e293b;
+    --header-text: #ffffff;
+    --card-bg: #ffffff;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --danger: #dc2626;
+    --success: #16a34a;
+    --muted: #6b7280;
+    --radius: 12px;
+    --shadow: 0 8px 24px rgba(0,0,0,0.12);
+    --font: 'Inter', system-ui, Arial, sans-serif;
 }
 
+/* Reset */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
+
+/* Body */
 body {
-    background: #f5f7fa;
-    color: #333;
-    line-height: 1.6;
+    background: var(--bg);
+    color: #0f172a;
+    padding: 20px;
 }
 
-.hidden {
-    display: none;
-}
-
-/* =======================
-   HEADER / MENU
-======================= */
+/* Header */
 header {
+    background: linear-gradient(90deg, #1e293b, #334155);
+    color: var(--header-text);
+    padding: 20px 30px;
+    border-radius: var(--radius);
+    font-weight: 700;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #1f2937;
-    color: #fff;
-    padding: 10px 20px;
+    box-shadow: var(--shadow);
 }
 
 header h1 {
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-size: 24px;
 }
 
+/* Navigation menu */
 nav button {
-    background: #3b82f6;
+    margin-left: 12px;
+    background: var(--accent);
     color: #fff;
-    border: none;
     padding: 8px 16px;
-    margin-left: 10px;
-    border-radius: 6px;
+    border-radius: var(--radius);
+    border: none;
     cursor: pointer;
+    font-weight: 600;
     transition: all 0.3s ease;
 }
 
 nav button:hover {
-    background: #2563eb;
+    background: var(--accent-hover);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-/* =======================
-   CARDS
-======================= */
-.card {
-    background: #fff;
-    border-radius: 10px;
-    padding: 20px;
+/* Container */
+#container {
+    max-width: 1200px;
     margin: 20px auto;
-    max-width: 900px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .card:hover {
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
 }
 
-/* =======================
-   PLAYER DISPLAY
-======================= */
-#playerCard {
-    display: flex;
-    justify-content: space-around;
-    text-align: center;
-}
+/* Hidden */
+.hidden { display: none; }
 
-#playerCard div {
-    background: #3b82f6;
-    color: #fff;
-    padding: 15px;
-    border-radius: 10px;
-    width: 120px;
-    transition: transform 0.2s;
-}
-
-#playerCard div:hover {
-    transform: scale(1.05);
-}
-
-/* =======================
-   CONTENT
-======================= */
-#content h2 {
-    margin-bottom: 15px;
-    color: #1f2937;
-}
-
-#content p {
-    margin-bottom: 10px;
-}
-
-#content ul {
-    list-style: none;
-}
-
-#content li {
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 15px;
-    border-radius: 8px;
-    background: #f1f5f9;
-    transition: all 0.3s;
-}
-
-#content li:hover {
-    background: #e0f2fe;
-}
-
-/* =======================
-   BOUTONS
-======================= */
+/* Buttons */
 .btn {
-    padding: 6px 12px;
-    background: #10b981;
+    background: var(--accent);
     color: #fff;
+    padding: 10px 18px;
+    border-radius: var(--radius);
     border: none;
-    border-radius: 6px;
     cursor: pointer;
+    font-weight: 600;
     transition: all 0.3s ease;
-    margin-left: 5px;
 }
 
 .btn:hover {
-    background: #059669;
-    transform: translateY(-2px);
+    background: var(--accent-hover);
+    transform: translateY(-1px);
 }
 
-input[type="text"], input[type="email"], input[type="password"] {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    margin-right: 10px;
-    transition: all 0.3s ease;
+.btn.alt {
+    background: #374151;
 }
 
-input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
-    border-color: #3b82f6;
-    outline: none;
+.btn.danger {
+    background: var(--danger);
 }
 
-/* =======================
-   CHAT
-======================= */
-#chatBox {
-    background: #f1f5f9;
-    border-radius: 8px;
+.btn.success {
+    background: var(--success);
+}
+
+/* Small text */
+.small {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* Grid layout */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 12px;
+}
+
+/* Badges */
+.badge {
+    background: #eef2ff;
+    color: var(--accent);
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    margin-left: 6px;
+}
+
+.embelli-badge {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 4px 8px;
+    border-radius: var(--radius);
+    margin-left: 6px;
+}
+
+/* Table */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
     padding: 10px;
-    margin-bottom: 10px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+}
+
+.table th {
+    background: #f3f4f6;
+    font-weight: 600;
+}
+
+/* Pages */
+.page {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+/* Chat */
+#chatBox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#chatMessages {
+    background: #f9fafb;
+    border-radius: var(--radius);
+    padding: 15px;
     max-height: 300px;
     overflow-y: auto;
-}
-
-#chatBox p {
-    margin-bottom: 5px;
+    border: 1px solid #e5e7eb;
 }
 
 #chatInput {
-    width: 80%;
-    padding: 8px 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+    display: flex;
+    gap: 10px;
 }
 
-/* =======================
-   RESPONSIVE
-======================= */
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-    }
+#chatInput input {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    border: 1px solid #d1d5db;
+}
 
-    #playerCard {
-        flex-direction: column;
-    }
+#chatInput button {
+    padding: 10px 20px;
+}
 
-    nav button {
-        margin-top: 10px;
-        margin-left: 0;
-    }
-
-    #content li {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .btn {
-        margin-top: 5px;
-        margin-left: 0;
-    }
+/* Responsive */
+@media(max-width: 900px){
+    body { padding: 12px; }
+    .grid { grid-template-columns: 1fr; }
+    header { flex-direction: column; align-items: flex-start; gap: 12px;}
+    nav button { margin-left: 0; }
 }
