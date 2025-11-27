@@ -1,74 +1,83 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Empire Des Finances</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Empire Des Finances</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
 <header>Empire Des Finances</header>
 
 <div id="container">
-
-    <!-- Login -->
-    <div class="card" id="loginCard">
-        <h2>Connexion</h2>
-        <input type="email" id="emailInput" placeholder="Email">
-        <input type="text" id="usernameInput" placeholder="Nom du joueur">
-        <button class="btn" id="loginBtn">Se connecter</button>
+  <!-- Login -->
+  <div class="card" id="loginCard">
+    <h2>Connexion</h2>
+    <input id="emailInput" type="email" placeholder="Email (servira d'ID)"/>
+    <input id="usernameInput" type="text" placeholder="Nom du joueur (affiché)"/>
+    <div class="controls">
+      <button class="btn" id="loginBtn">Se connecter / Créer compte</button>
     </div>
+    <p class="small">Les données seront sauvegardées dans Firebase Firestore.</p>
+  </div>
 
-    <!-- Infos joueur -->
-    <div class="card hidden" id="playerCard">
-        <h2>Informations du Joueur</h2>
-        <p><b>Email :</b> <span id="emailDisplay"></span></p>
-        <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
-        <p><b>Capital :</b> <span id="capitalDisplay"></span> €</p>
-        <p><b>Liquidités :</b> <span id="liquiditeDisplay"></span> €</p>
-        <p><b>Biens :</b> <span id="nbBiensDisplay"></span></p>
-        <p><b>Entreprises :</b> <span id="nbEntreprisesDisplay"></span></p>
-        <button class="btn" onclick="logout()">Se déconnecter</button>
+  <!-- Player info -->
+  <div class="card hidden" id="playerCard">
+    <h2>Informations du Joueur</h2>
+    <p><b>Email :</b> <span id="emailDisplay"></span></p>
+    <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
+    <p><b>Capital :</b> <span id="capitalDisplay"></span> €</p>
+    <p><b>Liquidités :</b> <span id="liquiditeDisplay"></span> €</p>
+    <p><b>Biens :</b> <span id="nbBiensDisplay"></span></p>
+    <p><b>Entreprises :</b> <span id="nbEntreprisesDisplay"></span></p>
+    <div class="controls">
+      <button class="btn" onclick="logout()">Se déconnecter</button>
     </div>
+  </div>
 
-    <!-- Menu -->
-    <div class="card hidden" id="menuCard">
-        <h2>Menu</h2>
-        <button class="btn" onclick="showBoutique()">Boutique</button>
-        <button class="btn" onclick="showMesProprietes()">Mes Propriétés</button>
-        <button class="btn" onclick="showBanque()">Banque</button>
-        <button class="btn" onclick="showOptions()">Options</button>
+  <!-- Menu -->
+  <div class="card hidden" id="menuCard">
+    <h2>Menu</h2>
+    <div class="controls">
+      <button class="btn" onclick="showAccueil()">Accueil</button>
+      <button class="btn" onclick="showBoutique()">Boutique</button>
+      <button class="btn" onclick="showMesProprietes()">Mes Propriétés</button>
+      <button class="btn" onclick="showEntreprises()">Entreprises (BETA)</button>
+      <button class="btn" onclick="showBanque()">Banque</button>
+      <button class="btn" onclick="showFinances()">Finances</button>
+      <button class="btn" onclick="showOptions()">Options</button>
     </div>
+  </div>
 
-    <!-- Zone dynamique -->
-    <div id="content" class="card hidden">
-        <h2>Bienvenue dans Empire Des Finances</h2>
-        <p>Connecte-toi pour commencer à gérer ton empire.</p>
-    </div>
-
+  <!-- dynamic content -->
+  <div id="content" class="card hidden">
+    <h2>Bienvenue dans Empire Des Finances</h2>
+    <p>Connecte-toi pour démarrer. 1 mois = 4h réelles (1 jour ≈ 8 min)</p>
+  </div>
 </div>
 
-<!-- Firebase -->
+<!-- Firebase init (modular, déjà version 12.x) -->
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBAuJkFTlYHoKyZiHiAAi-VxcNpZ-FAA9k",
-      authDomain: "empire-des-finances.firebaseapp.com",
-      projectId: "empire-des-finances",
-      storageBucket: "empire-des-finances.appspot.com",
-      messagingSenderId: "276513960656",
-      appId: "1:276513960656:web:b4440b88b797a4a6fa64d5"
-    };
+  // === remplace par ta config si besoin ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyBAuJkFTlYHoKyZiHiAAi-VxcNpZ-FAA9k",
+    authDomain: "empire-des-finances.firebaseapp.com",
+    projectId: "empire-des-finances",
+    storageBucket: "empire-des-finances.appspot.com",
+    messagingSenderId: "276513960656",
+    appId: "1:276513960656:web:b4440b88b797a4a6fa64d5"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    window.db = db;
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  // expose Firestore instance to script.js as window.db
+  window.db = db;
 </script>
 
+<!-- main script -->
 <script type="module" src="script.js"></script>
-
 </body>
 </html>
