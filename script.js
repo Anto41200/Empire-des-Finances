@@ -352,3 +352,45 @@ async function buyEnterprise(type,index){
 async function extractOil(idx){
   const e=userData.entreprises[idx];
   if(!e || e.type!=="pet
+// OUVERTURE DU FORMULAIRE DE LOGIN
+document.getElementById("openLoginBtn").addEventListener("click", () => {
+    document.getElementById("loginCard").classList.remove("hidden");
+});
+
+// FERMETURE
+document.getElementById("closeLoginBtn").addEventListener("click", () => {
+    document.getElementById("loginCard").classList.add("hidden");
+});
+
+// VRAI SYSTEME DE LOGIN (VERSION SIMPLE)
+document.getElementById("loginBtn").addEventListener("click", () => {
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+
+    if (username === "" || password === "") {
+        alert("Veuillez remplir tous les champs.");
+        return;
+    }
+
+    // SIMULATION D’UN COMPTE STOCKÉ
+    let savedUser = localStorage.getItem("empire_user");
+    savedUser = savedUser ? JSON.parse(savedUser) : null;
+
+    if (!savedUser) {
+        // Si aucun compte n’existe → on le crée
+        const newUser = { username, password };
+        localStorage.setItem("empire_user", JSON.stringify(newUser));
+        alert("Compte créé ! Vous êtes maintenant connecté.");
+    } else {
+        // Connexion normale
+        if (username === savedUser.username && password === savedUser.password) {
+            alert("Connexion réussie !");
+        } else {
+            alert("Nom d’utilisateur ou mot de passe incorrect.");
+            return;
+        }
+    }
+
+    // Fermeture du panel après connexion
+    document.getElementById("loginCard").classList.add("hidden");
+});
