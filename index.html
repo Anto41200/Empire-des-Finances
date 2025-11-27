@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Empire Des Finances</title>
 <link rel="stylesheet" href="style.css" />
+<!-- Chart.js pour l'historique -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <header>Empire Des Finances</header>
@@ -13,25 +15,29 @@
   <!-- Login -->
   <div class="card" id="loginCard">
     <h2>Connexion</h2>
-    <input id="emailInput" type="email" placeholder="Email (servira d'ID)"/>
-    <input id="usernameInput" type="text" placeholder="Nom du joueur (affiché)"/>
+    <input id="emailInput" type="email" placeholder="Email (servira d'ID)" />
+    <input id="usernameInput" type="text" placeholder="Nom du joueur (affiché)" />
     <div class="controls">
       <button class="btn" id="loginBtn">Se connecter / Créer compte</button>
+      <button class="btn alt" id="googleBtn">Se connecter avec Google</button>
     </div>
     <p class="small">Les données seront sauvegardées dans Firebase Firestore.</p>
   </div>
 
   <!-- Player info -->
   <div class="card hidden" id="playerCard">
-    <h2>Informations du Joueur</h2>
-    <p><b>Email :</b> <span id="emailDisplay"></span></p>
-    <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
-    <p><b>Capital :</b> <span id="capitalDisplay"></span> €</p>
-    <p><b>Liquidités :</b> <span id="liquiditeDisplay"></span> €</p>
-    <p><b>Biens :</b> <span id="nbBiensDisplay"></span></p>
-    <p><b>Entreprises :</b> <span id="nbEntreprisesDisplay"></span></p>
+    <div class="player-row">
+      <div>
+        <p><b>Email :</b> <span id="emailDisplay"></span></p>
+        <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
+      </div>
+      <div class="player-stats">
+        <p><b>Capital :</b> <span id="capitalDisplay"></span></p>
+        <p><b>Liquidités :</b> <span id="liquiditeDisplay"></span></p>
+      </div>
+    </div>
     <div class="controls">
-      <button class="btn" onclick="logout()">Se déconnecter</button>
+      <button class="btn" id="logoutBtn">Se déconnecter</button>
     </div>
   </div>
 
@@ -39,13 +45,13 @@
   <div class="card hidden" id="menuCard">
     <h2>Menu</h2>
     <div class="controls">
-      <button class="btn" onclick="showAccueil()">Accueil</button>
-      <button class="btn" onclick="showBoutique()">Boutique</button>
-      <button class="btn" onclick="showMesProprietes()">Mes Propriétés</button>
-      <button class="btn" onclick="showEntreprises()">Entreprises (BETA)</button>
-      <button class="btn" onclick="showBanque()">Banque</button>
-      <button class="btn" onclick="showFinances()">Finances</button>
-      <button class="btn" onclick="showOptions()">Options</button>
+      <button class="btn" id="accueilBtn">Accueil</button>
+      <button class="btn" id="boutiqueBtn">Boutique</button>
+      <button class="btn" id="proprietesBtn">Mes Propriétés</button>
+      <button class="btn" id="entreprisesBtn">Entreprises (BETA)</button>
+      <button class="btn" id="banqueBtn">Banque</button>
+      <button class="btn" id="financesBtn">Finances</button>
+      <button class="btn" id="optionsBtn">Options</button>
     </div>
   </div>
 
@@ -56,9 +62,10 @@
   </div>
 </div>
 
-<!-- Firebase init (modular, déjà version 12.x) -->
+<!-- Firebase init (modular) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut, setPersistence, browserLocalPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
   // === remplace par ta config si besoin ===
@@ -72,9 +79,11 @@
   };
 
   const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
   const db = getFirestore(app);
-  // expose Firestore instance to script.js as window.db
-  window.db = db;
+
+  // expose to main script
+  window.__FIREBASE = { auth, db, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut, setPersistence, browserLocalPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword };
 </script>
 
 <!-- main script -->
