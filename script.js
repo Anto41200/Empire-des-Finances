@@ -1,249 +1,200 @@
-// ==========================
-// GLOBALS
-// ==========================
-let player = {
-    email: "",
-    username: "",
+import { doc, setDoc, getDoc, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+const loginCard = document.getElementById("loginCard");
+const playerCard = document.getElementById("playerCard");
+const content = document.getElementById("content");
+
+const emailInput = document.getElementById("emailInput");
+const usernameInput = document.getElementById("usernameInput");
+const loginBtn = document.getElementById("loginBtn");
+const googleLoginBtn = document.getElementById("googleLoginBtn");
+
+const emailDisplay = document.getElementById("emailDisplay");
+const usernameDisplay = document.getElementById("usernameDisplay");
+const capitalDisplay = document.getElementById("capitalDisplay");
+const liquiditeDisplay = document.getElementById("liquiditeDisplay");
+const nbBiensDisplay = document.getElementById("nbBiensDisplay");
+const nbEntreprisesDisplay = document.getElementById("nbEntreprisesDisplay");
+
+let currentPlayer = null;
+let playerData = null;
+
+// INITIAL PLAYER STRUCTURE
+const defaultPlayerData = {
     capital: 300000,
     liquidite: 50000,
     biens: [],
     entreprises: [],
-    historique: []
+    historique: [],
+    timestamp: new Date().toISOString()
 };
 
-let currentPage = "accueil";
-
-// ==========================
-// UTILITIES
-// ==========================
-function show(elementId) {
-    document.querySelectorAll(".card").forEach(c => c.classList.add("hidden"));
-    document.getElementById(elementId).classList.remove("hidden");
-}
-
-function updatePlayerDisplay() {
-    document.getElementById("emailDisplay").innerText = player.email;
-    document.getElementById("usernameDisplay").innerText = player.username;
-    document.getElementById("capitalDisplay").innerText = player.capital.toLocaleString();
-    document.getElementById("liquiditeDisplay").innerText = player.liquidite.toLocaleString();
-    document.getElementById("nbBiensDisplay").innerText = player.biens.length;
-    document.getElementById("nbEntreprisesDisplay").innerText = player.entreprises.length;
-}
-
-// ==========================
 // LOGIN
-// ==========================
-document.getElementById("loginBtn").onclick = function() {
-    const email = document.getElementById("emailInput").value.trim();
-    const username = document.getElementById("usernameInput").value.trim();
-    if (!email || !username) {
-        alert("Merci de remplir tous les champs !");
-        return;
-    }
-    player.email = email;
-    player.username = username;
-    show("playerCard");
-    show("menuCard");
-    show("content");
-    updatePlayerDisplay();
-    showAccueil();
-};
+loginBtn.addEventListener("click", async () => {
+    const email = emailInput.value.trim();
+    const username = usernameInput.value.trim() || "Joueur";
+    if (!email) { alert("Email requis"); return; }
+    currentPlayer = email;
+    await loadPlayer(email, username);
+});
 
-document.getElementById("loginGoogleBtn").onclick = async function() {
-    const provider = new GoogleAuthProvider();
-    try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        player.email = user.email;
-        player.username = user.displayName || user.email.split("@")[0];
-        show("playerCard");
-        show("menuCard");
-        show("content");
-        updatePlayerDisplay();
-        showAccueil();
-    } catch (error) {
-        alert("Erreur connexion Google : " + error.message);
-    }
-};
+googleLoginBtn.addEventListener("click", async () => {
+    const provider = new window.GoogleAuthProvider();
+    const result = await signInWithPopup(window.auth, provider);
+    const email = result.user.email;
+    const username = result.user.displayName || "Joueur Google";
+    currentPlayer = email;
+    await loadPlayer(email, username);
+});
 
-function logout() {
-    player = {
-        email: "",
-        username: "",
-        capital: 300000,
-        liquidite: 50000,
-        biens: [],
-        entreprises: [],
-        historique: []
-    };
-    show("loginCard");
-    document.getElementById("emailInput").value = "";
-    document.getElementById("usernameInput").value = "";
+// LOAD OR CREATE PLAYER
+async function loadPlayer(email, username){
+    const docRef = doc(window.db, "players", email);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()){
+        await setDoc(docRef, { ...defaultPlayerData, username });
+        playerData = { ...defaultPlayerData, username };
+    } else {
+        playerData = docSnap.data();
+    }
+    updateUI();
 }
 
-// ==========================
-// PAGES
-// ==========================
-function showAccueil() {
-    currentPage = "accueil";
-    show("content");
-    document.getElementById("content").innerHTML = `
-        <h2>Accueil</h2>
-        <p>Bienvenue ${player.username} ! Capital initial : ${player.capital.toLocaleString()} €</p>
-    `;
+// UPDATE UI
+function updateUI(){
+    loginCard.classList.add("hidden");
+    playerCard.classList.remove("hidden");
+    content.classList.remove("hidden");
+
+    emailDisplay.textContent = currentPlayer;
+    usernameDisplay.textContent = playerData.username;
+    capitalDisplay.textContent = playerData.capital.toLocaleString();
+    liquiditeDisplay.textContent = playerData.liquidite.toLocaleString();
+    nbBiensDisplay.textContent = playerData.biens.length;
+    nbEntreprisesDisplay.textContent = playerData.entreprises.length;
 }
 
-function showProprietes() {
-    currentPage = "proprietes";
-    show("content");
-    const biens = ["Appartement", "Maison", "Villa", "Loft", "Manoir", "Château"];
-    let html = "<h2>Propriétés</h2>";
-    html += "<ul>";
-    biens.forEach((bien, idx) => {
-        const possede = player.biens.includes(bien);
-        html += `<li>${bien} 
-        <button class="btn" onclick="acheterBien('${bien}')">${possede ? 'Déjà acquis' : 'Acheter'}</button>`;
-        if (bien === "Château" && possede) {
-            html += ` <button class="btn" onclick="modeTourisme('${bien}')">Mettre en mode tourisme</button>`;
-            html += ` <button class="btn" onclick="optionsChateau('${bien}')">Options château</button>`;
-        }
-        html += "</li>";
+// LOGOUT
+function logout(){
+    currentPlayer = null;
+    playerData = null;
+    loginCard.classList.remove("hidden");
+    playerCard.classList.add("hidden");
+    content.classList.add("hidden");
+}
+
+// NAVIGATION
+window.showAccueil = () => { content.innerHTML = "<h2>Accueil</h2><p>Bienvenue à Empire des Finances.</p>"; };
+window.showProprietes = () => { renderBiens(); };
+window.showEntreprises = () => { renderEntreprises(); };
+window.showBanque = () => { content.innerHTML = "<h2>Banque</h2><p>Vos comptes et transactions seront ici.</p>"; };
+window.showDemocratie = () => { content.innerHTML = "<h2>Démocratie</h2><p>Page vide pour l'instant.</p>"; };
+window.showChat = () => { renderChat(); };
+
+// BIENS PERSONNELS
+const biensList = ["Appartement","Maison","Villa","Loft","Manoir","Château"];
+function renderBiens(){
+    let html = `<h2>Propriétés</h2><div class="grid">`;
+    biensList.forEach((bien,i) => {
+        html += `<div class="card">
+            <h3>${bien}</h3>
+            <p>Options: ${bien==="Château"?"Tourisme, Monument Historique, Événement": "Location classique"}</p>
+            <button class="btn" onclick="acheterBien('${bien}')">Acheter</button>
+            <button class="btn alt" onclick="vendreBien('${bien}')">Vendre</button>
+        </div>`;
     });
-    html += "</ul>";
-    document.getElementById("content").innerHTML = html;
+    html += "</div>";
+    content.innerHTML = html;
 }
 
-function showEntreprises() {
-    currentPage = "entreprises";
-    show("content");
-    const types = ["Ferme", "Commerce", "Industrie", "Pétrolier"];
-    let html = "<h2>Entreprises</h2>";
-    html += "<ul>";
-    types.forEach(type => {
-        html += `<li>${type} 
-        <button class="btn" onclick="acheterEntreprise('${type}')">Acheter</button>
-        <button class="btn" onclick="dissoudreEntreprise('${type}')">Dissoudre</button></li>`;
-    });
-    html += "</ul>";
-    document.getElementById("content").innerHTML = html;
-}
-
-function showBanque() {
-    currentPage = "banque";
-    show("content");
-    document.getElementById("content").innerHTML = `
-        <h2>Banque</h2>
-        <p>Fonctionnalités bancaires à venir : prêts, dépôt, retrait</p>
-    `;
-}
-
-function showFinances() {
-    currentPage = "finances";
-    show("content");
-    document.getElementById("content").innerHTML = `
-        <h2>Finances</h2>
-        <p>Graphiques et historique du patrimoine à venir</p>
-    `;
-}
-
-function showChat() {
-    currentPage = "chat";
-    show("content");
-    document.getElementById("content").innerHTML = `
-        <h2>Chat Global</h2>
-        <div id="chatBox" style="height:300px; overflow-y:auto; border:1px solid #ccc; padding:5px;"></div>
-        <input id="chatInput" type="text" placeholder="Écrire un message" />
-        <button class="btn" onclick="envoyerMessage()">Envoyer</button>
-    `;
-}
-
-function showDemocratie() {
-    currentPage = "democratie";
-    show("content");
-    document.getElementById("content").innerHTML = `
-        <h2>Démocratie</h2>
-        <p>Page vide - fonctionnalités à implémenter.</p>
-    `;
-}
-
-function showOptions() {
-    currentPage = "options";
-    show("content");
-    document.getElementById("content").innerHTML = `
-        <h2>Options</h2>
-        <p>Paramètres de langue, devise, auto-save et autres réglages.</p>
-    `;
-}
-
-// ==========================
-// BIENS
-// ==========================
-function acheterBien(bien) {
-    if (!player.biens.includes(bien)) {
-        const prix = bien === "Château" ? 200000 : 50000;
-        if (player.capital >= prix) {
-            player.capital -= prix;
-            player.biens.push(bien);
-            updatePlayerDisplay();
-            showProprietes();
-        } else alert("Pas assez de capital !");
-    }
-}
-
-function modeTourisme(bien) {
-    alert(`${bien} est maintenant en mode tourisme !`);
-}
-
-function optionsChateau(bien) {
-    alert(`Options disponibles pour ${bien} : \n- Monument historique\n- Entretien jardins\n- Organisation d'événements`);
-}
-
-// ==========================
 // ENTREPRISES
-// ==========================
-function acheterEntreprise(type) {
-    if (!player.entreprises.includes(type)) {
-        const prix = 100000;
-        if (player.capital >= prix) {
-            player.capital -= prix;
-            player.entreprises.push(type);
-            updatePlayerDisplay();
-            showEntreprises();
-        } else alert("Pas assez de capital !");
-    }
+const entreprisesList = ["Ferme","Commerce","Service"];
+function renderEntreprises(){
+    let html = `<h2>Entreprises</h2><div class="grid">`;
+    entreprisesList.forEach(ent => {
+        html += `<div class="card">
+            <h3>${ent}</h3>
+            <button class="btn" onclick="creerEntreprise('${ent}')">Créer</button>
+            <button class="btn alt" onclick="dissoudreEntreprise('${ent}')">Dissoudre</button>
+        </div>`;
+    });
+    html += "</div>";
+    content.innerHTML = html;
 }
 
-function dissoudreEntreprise(type) {
-    const idx = player.entreprises.indexOf(type);
-    if (idx >= 0) {
-        player.entreprises.splice(idx, 1);
-        alert(`${type} dissoute.`);
-        updatePlayerDisplay();
-        showEntreprises();
-    }
+// FUNCTIONS BIENS
+window.acheterBien = (bien) => {
+    playerData.biens.push({ type: bien, date: new Date().toISOString() });
+    savePlayer();
+    updateUI();
+    alert(bien + " acheté !");
+};
+
+window.vendreBien = (bien) => {
+    const index = playerData.biens.findIndex(b => b.type === bien);
+    if(index>-1){ playerData.biens.splice(index,1); savePlayer(); updateUI(); alert(bien + " vendu !"); }
+    else alert("Vous ne possédez pas ce bien.");
+};
+
+// FUNCTIONS ENTREPRISES
+window.creerEntreprise = (ent) => {
+    playerData.entreprises.push({ type: ent, date: new Date().toISOString() });
+    savePlayer();
+    updateUI();
+    alert(ent + " créée !");
+};
+
+window.dissoudreEntreprise = (ent) => {
+    const index = playerData.entreprises.findIndex(e => e.type===ent);
+    if(index>-1){ playerData.entreprises.splice(index,1); savePlayer(); updateUI(); alert(ent + " dissoute !"); }
+    else alert("Vous n'avez pas cette entreprise.");
+};
+
+// SAVE PLAYER
+async function savePlayer(){
+    if(!currentPlayer) return;
+    const docRef = doc(window.db, "players", currentPlayer);
+    await setDoc(docRef, playerData);
 }
 
-// ==========================
 // CHAT
-// ==========================
-let chatHistory = [];
-function envoyerMessage() {
-    const input = document.getElementById("chatInput");
-    const msg = input.value.trim();
-    if (!msg) return;
-    chatHistory.push({user: player.username, text: msg});
-    afficherChat();
-    input.value = "";
+function renderChat(){
+    content.innerHTML = `<h2>Chat Global</h2>
+    <div id="chatContainer">
+      <div id="chatMessages"></div>
+      <div id="chatInput">
+        <input type="text" id="chatMsg" placeholder="Écrire un message...">
+        <button onclick="sendMessage()">Envoyer</button>
+      </div>
+    </div>`;
+
+    const chatRef = collection(window.db, "chat");
+    const chatMessages = document.getElementById("chatMessages");
+
+    onSnapshot(chatRef, snapshot => {
+        chatMessages.innerHTML = "";
+        snapshot.docs.forEach(doc => {
+            const msg = doc.data();
+            const p = document.createElement("p");
+            p.innerHTML = `<b>${msg.username}:</b> ${msg.message}`;
+            chatMessages.appendChild(p);
+        });
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
 }
 
-function afficherChat() {
-    const chatBox = document.getElementById("chatBox");
-    if (!chatBox) return;
-    chatBox.innerHTML = chatHistory.map(m => `<p><b>${m.user}:</b> ${m.text}</p>`).join("");
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
+window.sendMessage = async () => {
+    const msgInput = document.getElementById("chatMsg");
+    if(!msgInput.value.trim()) return;
+    await addDoc(collection(window.db,"chat"), {
+        username: playerData.username,
+        message: msgInput.value.trim(),
+        timestamp: new Date().toISOString()
+    });
+    msgInput.value = "";
+};
 
-// ==========================
-// INITIAL DISPLAY
-// ==========================
-show("loginCard");
+// AUTO SAVE PERIODIQUE
+setInterval(() => { savePlayer(); }, 15000);
+
