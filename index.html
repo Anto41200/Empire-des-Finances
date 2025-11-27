@@ -1,45 +1,42 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Empire des Finances</title>
-<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <h1>Empire des Finances</h1>
-</header>
+<header>Empire des Finances</header>
 
 <div id="container">
-
-  <!-- LOGIN -->
+  <!-- Login -->
   <div class="card" id="loginCard">
     <h2>Connexion</h2>
-    <input id="emailInput" type="email" placeholder="Email (servira d'ID)"/>
+    <input id="emailInput" type="email" placeholder="Email"/>
     <input id="usernameInput" type="text" placeholder="Nom du joueur"/>
     <div class="controls">
       <button class="btn" id="loginBtn">Se connecter / Créer compte</button>
-      <button class="btn alt" id="googleLoginBtn">Connexion Google</button>
+      <button class="btn alt" id="loginGoogleBtn">Se connecter avec Google</button>
     </div>
-    <p class="small">Les données seront sauvegardées dans Firebase Firestore.</p>
+    <p class="small">Les données sont sauvegardées sur Firebase.</p>
   </div>
 
-  <!-- PLAYER INFO -->
+  <!-- Player info -->
   <div class="card hidden" id="playerCard">
     <h2>Informations du Joueur</h2>
     <p><b>Email :</b> <span id="emailDisplay"></span></p>
     <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
-    <p><b>Patrimoine :</b> <span id="capitalDisplay"></span> €</p>
+    <p><b>Capital :</b> <span id="capitalDisplay"></span> €</p>
     <p><b>Liquidités :</b> <span id="liquiditeDisplay"></span> €</p>
-    <p><b>Propriétés :</b> <span id="nbBiensDisplay"></span></p>
+    <p><b>Biens :</b> <span id="nbBiensDisplay"></span></p>
     <p><b>Entreprises :</b> <span id="nbEntreprisesDisplay"></span></p>
     <div class="controls">
-      <button class="btn" onclick="logout()">Se déconnecter</button>
+      <button class="btn alt" onclick="logout()">Se déconnecter</button>
     </div>
   </div>
 
-  <!-- MENU -->
+  <!-- Menu -->
   <div class="card hidden" id="menuCard">
     <h2>Menu</h2>
     <div class="controls">
@@ -48,21 +45,20 @@
       <button class="btn" onclick="showEntreprises()">Entreprises</button>
       <button class="btn" onclick="showBanque()">Banque</button>
       <button class="btn" onclick="showFinances()">Finances</button>
+      <button class="btn" onclick="showChat()">Chat</button>
       <button class="btn" onclick="showDemocratie()">Démocratie</button>
       <button class="btn" onclick="showOptions()">Options</button>
-      <button class="btn" onclick="showChat()">Chat</button>
     </div>
   </div>
 
-  <!-- DYNAMIC CONTENT -->
+  <!-- Dynamic content -->
   <div id="content" class="card hidden">
     <h2>Bienvenue dans Empire des Finances</h2>
     <p>Connecte-toi pour démarrer. 1 mois = 4h réelles (1 jour ≈ 8 min)</p>
   </div>
-
 </div>
 
-<!-- Firebase -->
+<!-- Firebase init -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
@@ -80,12 +76,13 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const auth = getAuth(app);
+
   window.db = db;
   window.auth = auth;
   window.GoogleAuthProvider = GoogleAuthProvider;
+  window.signInWithPopup = signInWithPopup;
 </script>
 
-<!-- MAIN SCRIPT -->
 <script type="module" src="script.js"></script>
 </body>
 </html>
