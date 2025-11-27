@@ -1,33 +1,259 @@
-/* Reset & Variables */
-:root{
-  --bg:#f0f4f8;
-  --card:#ffffff;
-  --accent:#2563eb;
-  --accent-hover:#1e40af;
-  --muted:#6b7280;
-  --danger:#dc2626;
-  --success:#16a34a;
-  --radius:12px;
-  --shadow:0 6px 20px rgba(0,0,0,0.08);
-  --transition:all 0.25s ease-in-out;
+/* =======================
+   RESET & BASE
+======================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
 }
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif;}
-body{background:var(--bg);color:#0f172a;padding:16px;}
-header{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(90deg,#0f172a,#1e293b);color:#fff;padding:16px;border-radius:12px;margin-bottom:20px;font-weight:700;font-size:1.3rem}
-#container{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
-.card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);transition:var(--transition)}
-.hidden{display:none}
-.controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
-.btn{background:var(--accent);color:#fff;padding:10px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:600;transition:var(--transition)}
-.btn:hover{background:var(--accent-hover)}
-.btn.alt{background:#374151;color:#fff}
-.small{color:var(--muted);font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:12px}
-.card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,0.15)}
-.badge{background:#eef2ff;color:var(--accent);padding:4px 8px;border-radius:999px;font-size:12px;margin-left:6px}
-.embelli-badge{background:#d1fae5;color:#065f46;padding:4px 8px;border-radius:8px;margin-left:6px}
-.table{width:100%;border-collapse:collapse}
-.table th,.table td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left}
-.header-left{font-size:1.4rem;font-weight:700}
-.header-right{font-size:0.9rem}
-@media(max-width:900px){body{padding:12px} .grid{grid-template-columns:1fr}}
+
+body {
+  background: linear-gradient(160deg, #f0f3f8, #e6ebf5);
+  color: #333;
+  min-height: 100vh;
+}
+
+.hidden { display: none !important; }
+
+/* =======================
+   HEADER
+======================= */
+header {
+  background: #1f2937;
+  color: #fff;
+  padding: 1rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* =======================
+   CONTAINER & CARDS
+======================= */
+#container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px rgba(0,0,0,0.12);
+}
+
+/* =======================
+   TITLES & TEXT
+======================= */
+h1, h2, h3 {
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+p {
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.small {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* =======================
+   BUTTONS
+======================= */
+.btn {
+  background: linear-gradient(135deg, #4f46e5, #3b82f6);
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  border-radius: 0.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0.3rem;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn.alt {
+  background: #fff;
+  color: #4f46e5;
+  border: 2px solid #4f46e5;
+}
+
+.btn.alt:hover {
+  background: #4f46e5;
+  color: #fff;
+}
+
+/* =======================
+   INPUTS
+======================= */
+input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 0.6rem;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 8px rgba(79, 70, 229, 0.3);
+}
+
+/* =======================
+   MENU & NAV
+======================= */
+#menuCard .controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* =======================
+   CONTENT
+======================= */
+#content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* =======================
+   TABLES / LISTS
+======================= */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.table th, .table td {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.table th {
+  background: #f5f7fa;
+  font-weight: 600;
+}
+
+/* =======================
+   CARDS LIST / ENTREPRISES
+======================= */
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.card-item {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.card-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.12);
+}
+
+.card-item h3 {
+  margin-bottom: 0.5rem;
+}
+
+.card-item .icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 0.5rem;
+}
+
+/* =======================
+   CHAT
+======================= */
+#chatBox {
+  max-height: 400px;
+  overflow-y: auto;
+  background: #f5f7fa;
+  padding: 1rem;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.chat-message {
+  padding: 0.5rem 1rem;
+  background: #fff;
+  border-radius: 0.8rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  word-wrap: break-word;
+}
+
+#chatInput {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 0.6rem;
+  border: 1px solid #ccc;
+}
+
+#chatSendBtn {
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+/* =======================
+   RESPONSIVE
+======================= */
+@media (max-width: 768px) {
+  .card-list {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  #menuCard .controls {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    font-size: 1.2rem;
+  }
+  .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+}
