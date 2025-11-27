@@ -1,43 +1,273 @@
-/* style.css - Empire des Finances (version améliorée) */
-:root{
-  --bg:#f4f6f8; --card:#ffffff; --accent:#2563eb; --accent-hover:#1d4ed8; --muted:#6b7280; --danger:#dc2626;
-  --radius:12px; --shadow:0 6px 24px rgba(0,0,0,0.08);
-  --max-width:1100px;
-}
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Arial,sans-serif}
-body{background:var(--bg);color:#0f172a;padding:20px;display:flex;justify-content:center;}
-header{background:linear-gradient(90deg,#0f172a,#1e293b);color:#fff;padding:16px;border-radius:8px;margin-bottom:18px;font-weight:700;width:100%;max-width:var(--max-width);text-align:center}
-#container{max-width:var(--max-width);width:100%;display:flex;flex-direction:column;gap:16px}
-.card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
-.hidden{display:none}
-.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.btn{background:var(--accent);color:#fff;padding:8px 12px;border-radius:10px;border:none;cursor:pointer}
-.btn.alt{background:#374151}
-.player-row{display:flex;justify-content:space-between;gap:12px;align-items:center}
-.player-stats{text-align:right}
-.small{color:var(--muted);font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:10px}
-.badge{background:#eef2ff;color:var(--accent);padding:4px 8px;border-radius:999px;font-size:12px}
-.embelli-badge{background:#d1fae5;color:#065f46;padding:4px 8px;border-radius:8px;margin-left:6px}
-.table{width:100%;border-collapse:collapse}
-.table th,.table td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left}
-.footer-note{font-size:12px;color:var(--muted);margin-top:8px}
+/* =========================
+   Empire des Finances - Light Pro / Blanc & Bleu
+   ========================= */
 
-/* Responsive improvements */
-@media(max-width:900px){
-  body{padding:12px}
-  .grid{grid-template-columns:1fr}
-  .player-row{flex-direction:column;align-items:flex-start}
-  .player-stats{text-align:left}
+:root {
+  --bg: #f9fafb;
+  --card: #ffffff;
+  --primary: #2563eb;        /* bleu principal */
+  --primary-hover: #1d4ed8;  /* bleu hover */
+  --secondary: #3b82f6;      /* bleu clair */
+  --danger: #ef4444;         /* rouge */
+  --muted: #6b7280;          /* gris texte secondaire */
+  --radius: 12px;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --font: "Inter", system-ui, Arial, sans-serif;
 }
 
-/* Pagination controls */
-.pager{display:flex;gap:8px;align-items:center;margin-top:8px}
-.input-inline{padding:8px;border-radius:6px;border:1px solid #ddd}
+/* =========================
+   Reset / Global
+   ========================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font);
+}
 
-/* compact cards */
-.card.small-card{padding:10px}
-.stat-pill{background:#0ea5a4;color:#fff;padding:6px 10px;border-radius:999px;font-weight:600}
+body {
+  background-color: var(--bg);
+  color: #111827;
+  padding: 20px;
+  line-height: 1.5;
+}
 
-/* table responsive */
-.table-wrap{overflow:auto}
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   Header
+   ========================= */
+header {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  color: #fff;
+  padding: 20px;
+  border-radius: var(--radius);
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+
+/* =========================
+   Container & Layout
+   ========================= */
+#container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* =========================
+   Card
+   ========================= */
+.card {
+  background-color: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================
+   Typography
+   ========================= */
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+  color: #111827;
+}
+
+p {
+  margin-bottom: 12px;
+}
+
+.small {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* =========================
+   Buttons
+   ========================= */
+.btn {
+  background-color: var(--primary);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.btn:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn.alt {
+  background-color: #e5e7eb;
+  color: #111827;
+}
+
+.btn.alt:hover {
+  background-color: #d1d5db;
+}
+
+/* =========================
+   Controls / Flex
+   ========================= */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* =========================
+   Grid Layouts
+   ========================= */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+/* =========================
+   Badges
+   ========================= */
+.badge {
+  background-color: #eef2ff;
+  color: var(--primary);
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+.embelli-badge {
+  background-color: #d1fae5;
+  color: #065f46;
+  padding: 4px 8px;
+  border-radius: 8px;
+  margin-left: 6px;
+}
+
+/* =========================
+   Tables
+   ========================= */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.table th {
+  background-color: #f3f4f6;
+}
+
+.table td {
+  background-color: #ffffff;
+}
+
+.table td:nth-child(4) {
+  font-weight: 600;
+}
+
+/* Colors for financial amounts */
+.table td.income {
+  color: #10b981; /* vert revenu */
+}
+
+.table td.expense {
+  color: var(--danger); /* rouge dépense */
+}
+
+/* =========================
+   Inputs
+   ========================= */
+input, select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  outline: none;
+  width: 100%;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus, select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* =========================
+   Responsive
+   ========================= */
+@media (max-width: 900px) {
+  body {
+    padding: 12px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  header {
+    font-size: 1.25rem;
+    padding: 16px;
+  }
+
+  .btn {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+}
+
+/* =========================
+   Misc / Animations
+   ========================= */
+.card button {
+  transition: all 0.2s ease;
+}
+
+.card button:hover {
+  transform: translateY(-2px);
+}
+
+/* Scrollable content for tables / long grids */
+#content {
+  max-height: 70vh;
+  overflow-y: auto;
+}
