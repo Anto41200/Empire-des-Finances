@@ -1,269 +1,91 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Empire des Finances</title>
-
-  <!-- Fonts (Inter) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- CSS principal (à fournir ensuite) -->
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Meta / PWA hint -->
-  <meta name="theme-color" content="#1f2937" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Empire des Finances</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- ================= HEADER ================= -->
-  <header role="banner" class="site-header card">
-    <div class="header-inner">
-      <div class="brand">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="#2563eb"></rect>
-          <text x="50%" y="55%" text-anchor="middle" fill="#fff" font-size="12" font-family="Inter" font-weight="700">EF</text>
-        </svg>
-        <div class="brand-text">
-          <h1>Empire des Finances</h1>
-          <div class="brand-sub">Simulation — Patrimoine & Gestion</div>
-        </div>
-      </div>
+<header>
+  <h1>Empire des Finances</h1>
+</header>
 
-      <div class="header-actions">
-        <div id="headerPatrimoine" class="header-stat small">Patrimoine: <b id="capitalDisplay">—</b> €</div>
-        <div id="headerLiquid" class="header-stat small">Liquidités: <b id="liquiditeDisplay">—</b> €</div>
-        <button class="btn btn-ghost" id="openLoginBtn" aria-haspopup="dialog">Se connecter / Créer compte</button>
-      </div>
+<div id="container">
+
+  <!-- LOGIN -->
+  <div class="card" id="loginCard">
+    <h2>Connexion</h2>
+    <input id="emailInput" type="email" placeholder="Email (servira d'ID)"/>
+    <input id="usernameInput" type="text" placeholder="Nom du joueur"/>
+    <div class="controls">
+      <button class="btn" id="loginBtn">Se connecter / Créer compte</button>
+      <button class="btn alt" id="googleLoginBtn">Connexion Google</button>
     </div>
-  </header>
+    <p class="small">Les données seront sauvegardées dans Firebase Firestore.</p>
+  </div>
 
-  <!-- ================= MAIN LAYOUT ================= -->
-  <main id="container" class="container">
-    <!-- LOGIN CARD (modal-style, hidden by default) -->
-    <aside id="loginCard" class="card modal hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-      <h2 id="loginTitle">Connexion / Création de compte</h2>
-      <p class="small">Ton email servira d'identifiant. Tu peux aussi te connecter via Google.</p>
-      <div class="form-grid">
-        <label class="field">
-          <span class="label">Email</span>
-          <input id="emailInput" type="email" placeholder="prenom.nom@example.com" autocomplete="email" />
-        </label>
-        <label class="field">
-          <span class="label">Nom affiché</span>
-          <input id="usernameInput" type="text" placeholder="Nom affiché (ex: Antonin)" />
-        </label>
-      </div>
-
-      <div class="controls">
-        <button class="btn" id="loginBtn">Se connecter / Créer compte</button>
-        <button class="btn alt" id="googleLoginBtn">Se connecter avec Google</button>
-        <button class="btn btn-ghost" id="closeLoginBtn">Annuler</button>
-      </div>
-
-      <p class="small mt-8">Les données sont sauvegardées dans Firebase Firestore. En te connectant tu acceptes la persistance de ton compte.</p>
-    </aside>
-
-    <!-- PLAYER SUMMARY (visible après connexion) -->
-    <section id="playerCard" class="card hidden" aria-live="polite">
-      <h2>Informations du Joueur</h2>
-      <div class="grid two-col">
-        <div>
-          <p><strong>Email :</strong> <span id="emailDisplay">—</span></p>
-          <p><strong>Nom :</strong> <span id="usernameDisplay">—</span></p>
-        </div>
-        <div>
-          <p><strong>Patrimoine :</strong> <span id="capitalDisplayCard">—</span> €</p>
-          <p><strong>Liquidités :</strong> <span id="liquiditeDisplayCard">—</span> €</p>
-        </div>
-      </div>
-      <div class="controls mt-8">
-        <button class="btn alt" id="logoutBtn">Se déconnecter</button>
-      </div>
-    </section>
-
-    <!-- SIDE MENU -->
-    <nav id="menuCard" class="card hidden" aria-label="Menu principal">
-      <h2>Menu</h2>
-      <div class="controls menu-controls">
-        <button class="btn" data-page="accueil" id="btnAccueil">Accueil</button>
-        <button class="btn" data-page="proprietes" id="btnProprietes">Propriétés</button>
-        <button class="btn" data-page="entreprises" id="btnEntreprises">Entreprises</button>
-        <button class="btn" data-page="boutique" id="btnBoutique">Boutique</button>
-        <button class="btn" data-page="banque" id="btnBanque">Banque</button>
-        <button class="btn" data-page="finances" id="btnFinances">Finances</button>
-        <button class="btn" data-page="democratie" id="btnDemocratie">Démocratie</button>
-        <button class="btn" data-page="chat" id="btnChat">Chat</button>
-        <button class="btn" data-page="options" id="btnOptions">Options</button>
-      </div>
-    </nav>
-
-    <!-- MAIN CONTENT (dynamic) -->
-    <section id="content" class="card hidden" role="main">
-      <h2>Bienvenue dans Empire des Finances</h2>
-      <p>Connecte-toi pour démarrer. 1 mois = 4h réelles (1 jour ≈ 8 min).</p>
-
-      <div class="home-grid">
-        <div class="card small-card">
-          <h3>Patrimoine</h3>
-          <p class="large" id="homePatrimoine">— €</p>
-          <p class="small">Valeur totale : biens + entreprises - dettes</p>
-        </div>
-
-        <div class="card small-card">
-          <h3>Liquidités</h3>
-          <p class="large" id="homeLiquid">— €</p>
-          <p class="small">Argent disponible pour acheter/entretien</p>
-        </div>
-
-        <div class="card small-card">
-          <h3>Événements récents</h3>
-          <div id="recentEvents" class="small"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CHAT PANEL (hidden until login or via menu) -->
-    <section id="chatPanel" class="card hidden" aria-labelledby="chatTitle">
-      <h2 id="chatTitle">Chat — Joueurs</h2>
-      <div id="chatBox" class="chat-box" aria-live="polite" role="log"></div>
-      <div class="chat-controls">
-        <input id="chatInput" type="text" placeholder="Écrire un message..." autocomplete="off" />
-        <button class="btn" id="chatSendBtn">Envoyer</button>
-      </div>
-    </section>
-
-    <!-- MODALS / HELP / DEPLOY -->
-    <div id="modals-root"></div>
-
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="card" role="contentinfo">
-    <div class="footer-inner">
-      <div>
-        <small>Empire des Finances — Prototype</small>
-      </div>
-      <div>
-        <small class="small">Version: dev</small>
-      </div>
+  <!-- PLAYER INFO -->
+  <div class="card hidden" id="playerCard">
+    <h2>Informations du Joueur</h2>
+    <p><b>Email :</b> <span id="emailDisplay"></span></p>
+    <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
+    <p><b>Patrimoine :</b> <span id="capitalDisplay"></span> €</p>
+    <p><b>Liquidités :</b> <span id="liquiditeDisplay"></span> €</p>
+    <p><b>Propriétés :</b> <span id="nbBiensDisplay"></span></p>
+    <p><b>Entreprises :</b> <span id="nbEntreprisesDisplay"></span></p>
+    <div class="controls">
+      <button class="btn" onclick="logout()">Se déconnecter</button>
     </div>
-  </footer>
+  </div>
 
-  <!-- ================= SCRIPTS ================= -->
-  <!-- firebase.js will initialize firebase, exports window.db, window.auth, window.googleLogin
-       - I'll provide firebase.js next; keep this script tag as-is. -->
-  <script type="module" src="firebase.js" defer></script>
+  <!-- MENU -->
+  <div class="card hidden" id="menuCard">
+    <h2>Menu</h2>
+    <div class="controls">
+      <button class="btn" onclick="showAccueil()">Accueil</button>
+      <button class="btn" onclick="showProprietes()">Propriétés</button>
+      <button class="btn" onclick="showEntreprises()">Entreprises</button>
+      <button class="btn" onclick="showBanque()">Banque</button>
+      <button class="btn" onclick="showFinances()">Finances</button>
+      <button class="btn" onclick="showDemocratie()">Démocratie</button>
+      <button class="btn" onclick="showOptions()">Options</button>
+      <button class="btn" onclick="showChat()">Chat</button>
+    </div>
+  </div>
 
-  <!-- main game logic (script.js) - will expose functions on window -->
-  <script type="module" src="script.js" defer></script>
+  <!-- DYNAMIC CONTENT -->
+  <div id="content" class="card hidden">
+    <h2>Bienvenue dans Empire des Finances</h2>
+    <p>Connecte-toi pour démarrer. 1 mois = 4h réelles (1 jour ≈ 8 min)</p>
+  </div>
 
-  <!-- Small inline glue (attach UI -> exposed window functions) -->
-  <script>
-    // UI glue: DOM elements -> call functions exposed by script.js (which must attach to window)
-    // These listeners are safe even if script.js hasn't loaded yet because they call window.* when available.
+</div>
 
-    // Open login modal
-    document.getElementById('openLoginBtn').addEventListener('click', () => {
-      document.getElementById('loginCard').classList.remove('hidden');
-    });
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
-    // Close login modal
-    document.getElementById('closeLoginBtn').addEventListener('click', () => {
-      document.getElementById('loginCard').classList.add('hidden');
-    });
+  const firebaseConfig = {
+    apiKey: "AIzaSyBAuJkFTlYHoKyZiHiAAi-VxcNpZ-FAA9k",
+    authDomain: "empire-des-finances.firebaseapp.com",
+    projectId: "empire-des-finances",
+    storageBucket: "empire-des-finances.appspot.com",
+    messagingSenderId: "276513960656",
+    appId: "1:276513960656:web:b4440b88b797a4a6fa64d5"
+  };
 
-    // Local login button: calls window.loginFromUI(email, username) — defined in script.js later
-    document.getElementById('loginBtn').addEventListener('click', () => {
-      const email = document.getElementById('emailInput').value.trim();
-      const username = document.getElementById('usernameInput').value.trim();
-      if (!email) return alert('Entre un email valide.');
-      // script.js must export window.loginFromUI
-      if (typeof window.loginFromUI === 'function') {
-        window.loginFromUI(email, username);
-      } else {
-        // fallback: store in localStorage simple account (works even without Firebase)
-        localStorage.setItem('empire_user', JSON.stringify({ email, username }));
-        alert('Compte créé localement (démo).');
-        document.getElementById('loginCard').classList.add('hidden');
-        // if script.js not loaded, populate header quickly:
-        document.getElementById('emailDisplay').textContent = email;
-        document.getElementById('usernameDisplay').textContent = username || email.split('@')[0];
-        // reveal menu to allow local usage
-        document.getElementById('playerCard').classList.remove('hidden');
-        document.getElementById('menuCard').classList.remove('hidden');
-        document.getElementById('content').classList.remove('hidden');
-      }
-    });
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  window.db = db;
+  window.auth = auth;
+  window.GoogleAuthProvider = GoogleAuthProvider;
+</script>
 
-    // Google login button — expects window.googleLogin from firebase.js
-    document.getElementById('googleLoginBtn').addEventListener('click', () => {
-      if (typeof window.googleLogin === 'function') {
-        window.googleLogin();
-      } else {
-        alert('Connexion Google non disponible (firebase.js manquant).');
-      }
-    });
-
-    // Logout — expects window.logout
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      if (typeof window.logout === 'function') window.logout();
-      else { localStorage.removeItem('empire_user'); location.reload(); }
-    });
-
-    // Menu navigation — these call window.showX functions exported from script.js
-    document.querySelectorAll('.menu-controls button').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const page = e.currentTarget.dataset.page;
-        // map page to functions that must be provided by script.js
-        const fnMap = {
-          'accueil': 'showAccueil',
-          'proprietes': 'showProprietes',
-          'entreprises': 'showEntreprises',
-          'boutique': 'showBoutique',
-          'banque': 'showBanque',
-          'finances': 'showFinances',
-          'democratie': 'showDemocratie',
-          'chat': 'showChat',
-          'options': 'showOptions'
-        };
-        const fnName = fnMap[page];
-        if (!fnName) return console.warn('Page non mappée:', page);
-        if (typeof window[fnName] === 'function') {
-          window[fnName]();
-        } else {
-          // graceful fallback: show placeholder if script not loaded
-          document.getElementById('content').classList.remove('hidden');
-          document.getElementById('content').innerHTML = `<h2>${page}</h2><p>Fonctionnalité disponible après chargement du script.</p>`;
-        }
-      });
-    });
-
-    // Chat send (calls window.sendMessage if available)
-    document.getElementById('chatSendBtn').addEventListener('click', () => {
-      const msg = document.getElementById('chatInput').value.trim();
-      if (!msg) return;
-      if (typeof window.sendMessage === 'function') {
-        window.sendMessage(msg);
-      } else {
-        const cb = document.getElementById('chatBox');
-        const el = document.createElement('div');
-        el.className = 'chat-message';
-        el.innerHTML = `<b>Local:</b> ${msg}`;
-        cb.appendChild(el);
-        cb.scrollTop = cb.scrollHeight;
-        document.getElementById('chatInput').value = '';
-      }
-    });
-
-    // quick UI placeholders for home page numbers (updated by script.js when ready)
-    if (!window.updateHomeNumbers) {
-      window.updateHomeNumbers = (patrimoine, liquidite) => {
-        document.getElementById('homePatrimoine').textContent = patrimoine ? patrimoine.toLocaleString() + ' €' : '—';
-        document.getElementById('homeLiquid').textContent = liquidite ? liquidite.toLocaleString() + ' €' : '—';
-        document.getElementById('headerPatrimoine').innerHTML = `Patrimoine: <b id="capitalDisplay">${patrimoine?patrimoine.toLocaleString():'—'}</b> €`;
-        document.getElementById('headerLiquid').innerHTML = `Liquidités: <b id="liquiditeDisplay">${liquidite?liquidite.toLocaleString():'—'}</b> €`;
-      };
-    }
-  </script>
+<!-- MAIN SCRIPT -->
+<script type="module" src="script.js"></script>
 </body>
 </html>
