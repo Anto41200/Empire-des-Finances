@@ -57,6 +57,7 @@ async function login() {
     window.acheterBien = acheterBien;
     window.louerBien = louerBien;
     window.vendreBien = vendreBien;
+    window.embellirBien = embellirBien;
     window.resetGame = resetGame;
     window.logout = logout;
 }
@@ -104,11 +105,12 @@ function showMesProprietes() {
     userData.biens.forEach((b, i) => {
         html += `
             <div class="card">
-                <h3>${b.nom}</h3>
+                <h3>${b.nom}${b.embelli ? `<span class="embelli-badge">Embellie</span>` : ""}</h3>
                 <p>Valeur : ${b.prix.toLocaleString()} €</p>
                 <p>Status : ${b.enLocation ? "En location" : "Libre"}</p>
                 <button class="btn" onclick="louerBien(${i})">Louer (3%)</button>
                 <button class="btn" onclick="vendreBien(${i})">Vendre</button>
+                ${b.embelli ? "" : `<button class="btn" onclick="embellirBien(${i})">Embellir (25%)</button>`}
             </div>
         `;
     });
@@ -123,7 +125,7 @@ async function acheterBien(index) {
     const item = boutique[index];
     if (userData.liquidite < item.prix) return alert("Pas assez de liquidités !");
     userData.liquidite -= item.prix;
-    userData.biens.push({ nom: item.nom, prix: item.prix, enLocation: false });
+    userData.biens.push({ nom: item.nom, prix: item.prix, enLocation: false, embelli: false });
     await saveUser();
     updateStats();
     showMesProprietes();
@@ -143,9 +145,31 @@ async function vendreBien(index) {
 async function louerBien(index) {
     const bien = userData.biens[index];
     if (bien.enLocation) return alert("Ce bien est déjà loué !");
-    const revenu = Math.floor(bien.prix * (revenuPourcent/100));
+
+    let pourcentageRevenu = revenuPourcent / 100;
+    if (bien.embelli) pourcentageRevenu += 0.25; // +25% si embelli
+
+    const revenu = Math.floor(bien.prix * pourcentageRevenu);
     userData.liquidite += revenu;
     bien.enLocation = true;
+
+    await saveUser();
+    updateStats();
+    showMesProprietes();
+}
+
+async function embellirBien(index) {
+    const bien = userData.biens[index];
+    const coutEmbellissement = Math.floor(bien.prix * 0.25);
+
+    if (bien.embelli) return alert("Ce bien a déjà été embelli !");
+    if (userData.liquidite < coutEmbellissement) return alert("Pas assez de liquidités pour embellir !");
+
+    if (!confirm(`Embellir ${bien.nom} pour ${coutEmbellissement.toLocaleString()} € ? Cela augmentera le loyer de 25%`)) return;
+
+    userData.liquidite -= coutEmbellissement;
+    bien.embelli = true;
+
     await saveUser();
     updateStats();
     showMesProprietes();
@@ -162,7 +186,11 @@ async function checkDailyUpdate() {
         // Revenu location
         let totalRevenu = 0;
         userData.biens.forEach(b => {
-            if (b.enLocation) totalRevenu += Math.floor(b.prix * (revenuPourcent/100));
+            if (b.enLocation) {
+                let pourcentage = revenuPourcent / 100;
+                if (b.embelli) pourcentage += 0.25;
+                totalRevenu += Math.floor(b.prix * pourcentage);
+            }
         });
 
         // Entretien 0.5%
@@ -193,4 +221,5 @@ function resetGame() {
     updateStats();
     showAccueil();
 }
+
 function logout() { location.reload(); }
