@@ -1,140 +1,144 @@
 /* ================================================
-   style.css — Style complet et harmonieux Empire des Finances
-   Design noble et élégant
+   style.css — Design ultra noble Empire des Finances
+   Couleurs : vert sinople, blanc, doré, élégant et harmonieux
    ================================================ */
 
 /* ==== RESET ==== */
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Libre Caslon Text', serif; }
-body { background-color: #f5f5f5; color: #222; }
+body { background-color: #f0f4f2; color: #1b1b1b; }
 
 /* ==== HEADER ==== */
-.dash-header {
-  background: linear-gradient(90deg, #2a6f4e, #1d4f33);
+header {
+  background: linear-gradient(90deg, #1b4f36, #2a6f4e);
   color: #fff;
-  padding: 20px;
+  padding: 25px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+  border-bottom: 4px solid #d4af37;
 }
-.dash-header h1 { font-size: 1.8rem; font-weight: bold; }
-.dash-header button {
-  background-color: #fff;
-  color: #2a6f4e;
+header h1 { font-size: 2rem; font-weight: bold; letter-spacing: 1px; }
+header button {
+  background-color: #d4af37;
+  color: #1b4f36;
   border: none;
-  padding: 10px 20px;
+  padding: 12px 25px;
+  border-radius: 12px;
   font-weight: bold;
-  border-radius: 10px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s;
 }
-.dash-header button:hover { background-color: #e2e2e2; }
+header button:hover { background-color: #b9972f; }
 
 /* ==== LOGIN / REGISTER ==== */
 .login-container {
-  max-width: 400px;
-  margin: 80px auto;
+  max-width: 450px;
+  margin: 100px auto;
   background-color: #fff;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  padding: 40px;
+  border-radius: 25px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  border-top: 6px solid #d4af37;
 }
-.login-container h1, .login-container h2 {
-  margin-bottom: 20px;
-  text-align: center;
-}
+.login-container h1, .login-container h2 { text-align: center; margin-bottom: 25px; color: #1b4f36; }
 .login-container input {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 12px;
   border: 1px solid #ccc;
 }
 .login-container button {
   width: 100%;
-  padding: 12px;
-  border-radius: 10px;
+  padding: 15px;
+  border-radius: 12px;
   border: none;
   background-color: #2a6f4e;
   color: #fff;
   font-weight: bold;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: 0.3s;
 }
-.login-container button:hover { background-color: #1d4f33; }
+.login-container button:hover { background-color: #1b4f36; }
 
 /* ==== DASHBOARD ==== */
 .dashboard {
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 20px;
+  max-width: 1250px;
+  margin: 50px auto;
+  padding: 30px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 40px;
 }
 .stats {
   display: flex;
-  gap: 40px;
+  gap: 50px;
   justify-content: space-around;
-  background-color: #e6f0eb;
-  padding: 20px;
-  border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: #eaf3ec;
+  padding: 25px;
+  border-radius: 25px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  border-left: 6px solid #d4af37;
 }
-.stats p { font-size: 1.2rem; font-weight: bold; }
+.stats p { font-size: 1.3rem; font-weight: bold; color: #1b4f36; }
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 25px;
   justify-content: center;
 }
 .actions button {
-  padding: 15px 25px;
-  border-radius: 15px;
+  padding: 18px 30px;
+  border-radius: 20px;
   border: none;
   background-color: #2a6f4e;
   color: #fff;
   font-weight: bold;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: 0.3s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
-.actions button:hover { background-color: #1d4f33; }
+.actions button:hover { background-color: #1b4f36; }
 
 /* ==== PANELS ==== */
+section { background-color: #fff; padding: 30px; border-radius: 25px; box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
 .hidden { display: none; }
-section { background-color: #fff; padding: 20px; border-radius: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 
 /* ==== ENTREPRISES ==== */
 .entreprise-panel button, .entreprise-item button {
-  padding: 10px 20px;
-  border-radius: 10px;
+  padding: 12px 25px;
+  border-radius: 15px;
   border: none;
   background-color: #2a6f4e;
   color: #fff;
   font-weight: bold;
+  font-size: 1rem;
   cursor: pointer;
-  margin-top: 10px;
-  transition: 0.3s;
+  margin-top: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
-.entreprise-panel button:hover, .entreprise-item button:hover { background-color: #1d4f33; }
+.entreprise-panel button:hover, .entreprise-item button:hover { background-color: #1b4f36; }
 .entreprise-item {
-  background-color: #f1f9f4;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 15px;
+  background-color: #f5faf5;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  border-left: 6px solid #d4af37;
 }
-.details-entreprise p { margin-bottom: 10px; }
-.details-entreprise button { margin-right: 10px; }
+.details-entreprise p { margin-bottom: 12px; color: #1b4f36; }
+.details-entreprise button { margin-right: 12px; }
 
 /* ==== RESPONSIVE ==== */
 @media(max-width: 768px){
-  .stats { flex-direction: column; gap: 20px; }
-  .actions { flex-direction: column; gap: 15px; }
+  .stats { flex-direction: column; gap: 25px; }
+  .actions { flex-direction: column; gap: 20px; }
+  .entreprise-item { flex-direction: column; align-items: flex-start; }
 }
 
-/* ==== EFFETS ===== */
+/* ==== EFFETS ==== */
 button, input { transition: all 0.3s ease; }
