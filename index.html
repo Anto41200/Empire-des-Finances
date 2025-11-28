@@ -10,21 +10,21 @@
 
 <header>
   <div class="header-left">🏛️ Empire des Finances</div>
-  <nav class="header-right menu">
-    <button class="nav-btn" onclick="showAccueil()">🏡 Accueil</button>
-    <button class="nav-btn" onclick="showProprietes()">🏠 Propriétés</button>
-    <button class="nav-btn" onclick="showEntreprises()">🏢 Entreprises</button>
+  <nav class="header-right">
+    <button class="nav-btn" onclick="showAccueil()">🏠 Accueil</button>
+    <button class="nav-btn" onclick="showProprietes()">🏘️ Propriétés</button>
+    <button class="nav-btn" onclick="showEntreprises()">🏭 Entreprises</button>
     <button class="nav-btn" onclick="showBanque()">🏦 Banque</button>
     <button class="nav-btn" onclick="showDemocratie()">⚖️ Démocratie</button>
     <button class="nav-btn" onclick="showChat()">💬 Chat</button>
   </nav>
 </header>
 
-<main id="container" class="center-box">
+<main id="container">
 
-  <!-- LOGIN CARD -->
+  <!-- LOGIN -->
   <div class="card" id="loginCard">
-    <h2>🔑 Connexion</h2>
+    <h2>Connexion</h2>
     <input id="emailInput" type="email" placeholder="Email (servira d'ID)">
     <input id="usernameInput" type="text" placeholder="Nom du joueur">
     <div class="controls">
@@ -36,17 +36,18 @@
     <p class="small">Les données sont sauvegardées dans Firebase.</p>
   </div>
 
-  <!-- PLAYER INFO CARD -->
+  <!-- PLAYER INFO -->
   <div class="card hidden" id="playerCard">
-    <h2>📊 Informations du Joueur</h2>
+    <h2>Informations du Joueur</h2>
     <p><b>Email :</b> <span id="emailDisplay"></span></p>
     <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
     <p><b>Patrimoine :</b> <span id="capitalDisplay"></span> §</p>
     <p><b>Liquidités :</b> <span id="liquiditeDisplay"></span> §</p>
     <p><b>Nombre de biens :</b> <span id="nbBiensDisplay"></span></p>
     <p><b>Nombre d'entreprises :</b> <span id="nbEntreprisesDisplay"></span></p>
+    <p><b>Emprunts en cours :</b> <span id="loansDisplay">0</span> §</p>
     <div class="controls">
-      <button class="btn alt full logout" onclick="logout()">Se déconnecter</button>
+      <button class="btn alt full" onclick="logout()">Se déconnecter</button>
     </div>
   </div>
 
@@ -56,33 +57,56 @@
     <p>Connecte-toi pour démarrer. 1 mois = 4h réelles (1 jour ≈ 8 minutes)</p>
   </div>
 
+  <!-- PROPRIETES (sous-pages) -->
+  <div id="proprietesPage" class="card hidden">
+    <h2>🏘️ Propriétés</h2>
+    <div class="subnav">
+      <button class="btn sub" onclick="showAcheter()">🛒 Acheter</button>
+      <button class="btn sub" onclick="showGerer()">⚙️ Gérer</button>
+    </div>
+    <div id="proprietesContent"></div>
+  </div>
+
+  <!-- BANQUE -->
+  <div id="banquePage" class="card hidden">
+    <h2>🏦 Banque</h2>
+    <p><b>Liquidités disponibles :</b> <span id="bankLiquidite">0</span> §</p>
+    <p><b>Emprunts actifs :</b> <span id="bankLoans">0</span> §</p>
+    <div class="controls">
+      <input type="number" id="loanAmount" placeholder="Montant emprunt">
+      <button class="btn" onclick="prendreEmprunt()">📥 Emprunter</button>
+      <button class="btn alt" onclick="rembourserEmprunt()">💳 Rembourser</button>
+    </div>
+    <div id="loanHistory"></div>
+  </div>
+
+  <!-- ENTREPRISES -->
+  <div id="entreprisesPage" class="card hidden">
+    <h2>🏭 Entreprises</h2>
+    <div id="entreprisesContent"></div>
+  </div>
+
+  <!-- DEMOCRATIE -->
+  <div id="democratiePage" class="card hidden">
+    <h2>⚖️ Démocratie</h2>
+    <p>Page en construction pour les votes et lois.</p>
+  </div>
+
+  <!-- CHAT -->
+  <div id="chatPage" class="card hidden">
+    <h2>💬 Chat Global</h2>
+    <div id="chatContainer">
+      <div id="chatMessages"></div>
+      <div id="chatInput">
+        <input type="text" id="chatMsg" placeholder="Écrire un message...">
+        <button onclick="sendMessage()">Envoyer</button>
+      </div>
+    </div>
+  </div>
+
 </main>
 
-<!-- FIREBASE INIT -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBAuJkFTlYHoKyZiHiAAi-VxcNpZ-FAA9k",
-  authDomain: "empire-des-finances.firebaseapp.com",
-  projectId: "empire-des-finances",
-  storageBucket: "empire-des-finances.appspot.com",
-  messagingSenderId: "276513960656",
-  appId: "1:276513960656:web:b4440b88b797a4a6fa64d5"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-window.db = db;
-window.auth = auth;
-window.GoogleAuthProvider = GoogleAuthProvider;
-</script>
-
-<!-- MAIN SCRIPT -->
+<!-- Firebase + JS -->
 <script type="module" src="script.js"></script>
 
 </body>
