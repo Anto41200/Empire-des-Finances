@@ -1,120 +1,82 @@
+/* ------------------ VARIABLES ------------------ */
 :root {
-  --bg: #f9f3ef;
-  --card: #ffffff;
-  --accent: #7b4b2d;
-  --accent-hover: #59321f;
-  --text-dark: #3b2f2f;
-  --text-muted: #7d6b61;
-  --radius: 12px;
-  --shadow: 0 8px 24px rgba(0,0,0,0.1);
-  --gold: #d4af37;
+  --bg: #f9f5f0;              /* fond chaleureux beige */
+  --card: #ffffff;             /* cartes blanches */
+  --accent: #6b4226;           /* brun noble */
+  --accent-hover: #4e2f1c;     /* brun foncé */
+  --text-dark: #3b2f2f;        /* texte sombre */
+  --text-muted: #7a6c5c;       /* texte secondaire */
+  --danger: #c53030;           /* rouge pour alertes */
+  --radius: 14px;              /* arrondi cartes/boutons */
+  --shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 
-body{
-  font-family: 'Georgia', serif;
-  background: var(--bg);
-  color: var(--text-dark);
-  margin: 0;
-  padding: 20px;
-}
+/* ------------------ GLOBAL ------------------ */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Georgia', serif; }
+body { background: var(--bg); color: var(--text-dark); padding: 20px; }
+h2, h3, h4 { color: var(--accent); margin-bottom: 12px; }
+p { margin-bottom: 8px; }
 
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background: linear-gradient(90deg,var(--accent),var(--accent-hover));
-  color:#fff;
-  padding:16px 24px;
-  border-radius:var(--radius);
-  margin-bottom:20px;
-}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
 
-header .nav-btn{
-  margin-left:10px;
-  padding:8px 12px;
-  border-radius:10px;
-  border:none;
-  background: rgba(255,255,255,0.2);
-  color:#fff;
-  cursor:pointer;
-  font-weight:bold;
-  transition:0.2s;
-}
-header .nav-btn:hover{
-  background: rgba(255,255,255,0.4);
-}
+/* ------------------ HEADER ------------------ */
+header { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(90deg, #8b5e3c, #6b4226); color: #fff; padding: 16px 24px; border-radius: var(--radius); margin-bottom: 20px; box-shadow: var(--shadow); }
+.header-left { font-size: 24px; font-weight: bold; }
+.header-right { display: flex; gap: 10px; }
+header .nav-btn { padding: 8px 12px; border-radius: 10px; border: none; background: rgba(255,255,255,0.2); color: #fff; cursor: pointer; font-weight: bold; transition: all 0.2s; }
+header .nav-btn:hover { background: rgba(255,255,255,0.4); }
 
-.card{
-  background: var(--card);
-  border-radius: var(--radius);
-  padding:20px;
-  box-shadow: var(--shadow);
-  transition: all 0.3s;
-}
-.card:hover{
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.15);
-}
+/* ------------------ CONTAINER ------------------ */
+#container { max-width: 1300px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
 
-.btn{
-  padding:10px 16px;
-  border-radius:12px;
-  border:none;
-  background: var(--accent);
-  color:#fff;
-  cursor:pointer;
-  transition: all 0.2s;
-  font-weight:bold;
-}
-.btn:hover{ background: var(--accent-hover); }
+/* ------------------ CARDS ------------------ */
+.card { background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; }
+.card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.15); }
+.hidden { display: none; }
 
-.btn.alt{
-  background: var(--text-muted);
-  color:#fff;
-}
-.btn.alt:hover{ background: #5a4b42; }
+/* ------------------ BUTTONS ------------------ */
+.btn { padding: 10px 16px; border-radius: 12px; border: none; background: var(--accent); color: #fff; cursor: pointer; font-weight: bold; transition: all 0.2s; }
+.btn:hover { background: var(--accent-hover); }
+.btn.alt { background: #d4af7f; color: var(--text-dark); }
+.btn.alt:hover { background: #b8915f; }
 
-.btn.full{ width:100%; }
+/* ------------------ INPUTS ------------------ */
+input { padding: 10px 12px; border-radius: 10px; border: 1px solid #c2b7a4; width: 100%; margin-top: 8px; font-size: 14px; background: #fdf8f2; color: var(--text-dark); }
+input::placeholder { color: var(--text-muted); }
 
-input{
-  padding:10px 12px;
-  border-radius:10px;
-  border:1px solid #c3b59b;
-  width:100%;
-  margin-top:8px;
-}
+/* ------------------ CONTROLS ------------------ */
+.controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 
-.controls{ display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+/* ------------------ SMALL TEXT ------------------ */
+.small { font-size: 12px; color: var(--text-muted); }
 
-.small{ font-size:12px; color: var(--text-muted); }
+/* ------------------ GRID ------------------ */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
 
-.grid{
-  display:grid;
-  grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
-  gap:16px;
-  margin-top:16px;
-}
+/* ------------------ BADGES ------------------ */
+.badge { padding: 4px 8px; border-radius: 12px; background: #ffe5b4; color: #6b4226; font-size: 12px; margin-left: 4px; }
+.embelli-badge { background: #e3f8e2; color: #276749; font-size: 12px; padding: 4px 8px; border-radius: 10px; margin-left: 4px; }
 
-.subnav{
-  display:flex;
-  gap:10px;
-  margin-bottom:12px;
-}
-.sub-btn{
-  padding:8px 12px;
-  border-radius:10px;
-  border:2px solid var(--gold);
-  background:#fff;
-  color:var(--accent);
-  cursor:pointer;
-  font-weight:bold;
-}
-.sub-btn:hover{ background:var(--gold); color:#fff; }
+/* ------------------ TABLE ------------------ */
+.table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+.table th, .table td { padding: 10px; border-bottom: 1px solid #e2dcd0; text-align: left; }
 
-.hidden{ display:none; }
+/* ------------------ CHAT ------------------ */
+#chatContainer { display: flex; flex-direction: column; height: 400px; border: 1px solid #c2b7a4; border-radius: var(--radius); overflow: hidden; }
+#chatMessages { flex: 1; padding: 10px; overflow-y: auto; background: #fdf8f2; }
+#chatMessages p { padding: 4px 6px; margin-bottom: 4px; border-radius: 6px; background: #fff4e0; }
+#chatInput { display: flex; border-top: 1px solid #c2b7a4; }
+#chatInput input { flex: 1; padding: 10px; border: none; border-radius: 0; background: #fff4e0; }
+#chatInput button { padding: 0 16px; background: var(--accent); color: #fff; border: none; cursor: pointer; }
+#chatInput button:hover { background: var(--accent-hover); }
 
-@media(max-width:900px){
-  header{ flex-direction:column; align-items:flex-start;}
-  header .header-right{margin-top:8px;}
-  .subnav{ flex-direction:column; }
+/* ------------------ PROPRIÉTÉS ------------------ */
+#proprietesDetail { margin-top: 12px; }
+
+/* ------------------ RESPONSIVE ------------------ */
+@media(max-width:900px) { 
+    header { flex-direction: column; align-items: flex-start; } 
+    header .header-right { margin-top: 8px; }
+    .grid { grid-template-columns: 1fr; }
 }
