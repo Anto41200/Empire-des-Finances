@@ -198,3 +198,34 @@ window.sendMessage = async () => {
 // AUTO SAVE PERIODIQUE
 setInterval(() => { savePlayer(); }, 15000);
 
+// NAVIGATION POUR PROPRIETES
+window.showProprietes = () => { 
+    document.getElementById("proprietesContent").classList.remove("hidden"); 
+    document.getElementById("acheterSection").classList.remove("hidden");
+    document.getElementById("gererSection").classList.add("hidden");
+};
+
+window.showAcheter = () => { 
+    document.getElementById("acheterSection").classList.remove("hidden"); 
+    document.getElementById("gererSection").classList.add("hidden");
+};
+
+window.showGerer = () => { 
+    document.getElementById("gererSection").classList.remove("hidden"); 
+    document.getElementById("acheterSection").classList.add("hidden");
+};
+
+// BIENS DANS "Gérer" (à afficher seulement pour les biens déjà possédés)
+function renderGererBiens() {
+    let html = `<h2>Mes Propriétés</h2><div class="grid">`;
+    playerData.biens.forEach(bien => {
+        html += `<div class="card">
+            <h3>${bien.type}</h3>
+            <p>Propriétaire depuis: ${new Date(bien.date).toLocaleDateString()}</p>
+            <button class="btn" onclick="renommerBien('${bien.type}')">Renommer</button>
+            <button class="btn alt" onclick="vendreBien('${bien.type}')">Vendre</button>
+        </div>`;
+    });
+    html += "</div>";
+    document.getElementById("gererSection").innerHTML = html;
+}
