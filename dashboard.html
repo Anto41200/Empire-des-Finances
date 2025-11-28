@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Empire des Finances – Tableau de Bord</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="dash-header">
+    <h1 class="dash-title">Empire des Finances</h1>
+    <button id="logout-btn" class="logout-btn">Déconnexion</button>
+  </header>
+
+  <main class="dashboard">
+
+    <section class="stats-panel">
+      <h2>Vos statistiques</h2>
+      <div class="stat">Capital : <span id="capital">0</span> €</div>
+      <div class="stat">Liquidités : <span id="liquidites">0</span> €</div>
+      <div class="stat">Revenus / min : <span id="revenus">0</span> €</div>
+      <div class="stat">Biens possédés : <span id="biens">0</span></div>
+    </section>
+
+    <section class="actions-panel">
+      <h2>Actions</h2>
+      <button class="action-btn" id="gain-auto">Collecter revenus</button>
+      <button class="action-btn" id="acheter-bien">Acheter un bien (5 000 €)</button>
+      <button class="action-btn" id="banque-btn">Accès Banque</button>
+      <button class="action-btn" id="chateau-btn">Voir le Château</button>
+    </section>
+
+    <section class="chateau-panel hidden" id="chateau-panel">
+      <h2>Votre Château</h2>
+      <img src="assets/chateau.png" alt="Château" class="chateau-img" />
+      <p>Niveau du château : <span id="chateau-niveau">1</span></p>
+      <button class="action-btn" id="upgrade-chateau">Améliorer le château (50 000 €)</button>
+    </section>
+
+    <section class="bank-panel hidden" id="bank-panel">
+      <h2>Banque</h2>
+      <button class="action-btn" id="depot">Déposer 1 000 €</button>
+      <button class="action-btn" id="retrait">Retirer 1 000 €</button>
+    </section>
+
+  </main>
+
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
