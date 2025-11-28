@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empire des Finances – Entreprises</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="dash-header">
+    <h1 class="dash-title">Empire des Finances – Entreprises</h1>
+    <button class="logout-btn" onclick="window.location.href='dashboard.html'">Retour</button>
+  </header>
+
+  <main class="dashboard">
+
+    <!-- Créer une entreprise -->
+    <section class="entreprise-panel">
+      <h2>Créer une entreprise</h2>
+      <p>Investissez dans le secteur agricole ou commercial et générez des revenus passifs.</p>
+      <button class="action-btn" id="create-agri">Créer une entreprise agricole (20 000 €)</button>
+      <button class="action-btn" id="create-com">Créer une entreprise commerciale (30 000 €)</button>
+    </section>
+
+    <!-- Liste des entreprises -->
+    <section class="liste-entreprises">
+      <h2>Vos entreprises</h2>
+      <div id="liste"></div>
+    </section>
+
+    <!-- Détails entreprise sélectionnée -->
+    <section class="details-entreprise hidden" id="details-panel">
+      <h2>Détails de l'entreprise</h2>
+      <p>Nom : <span id="det-nom"></span></p>
+      <p>Type : <span id="det-type"></span></p>
+      <p>Investissement : <span id="det-invest"></span> €</p>
+      <p>Revenus par minute : <span id="det-revenus"></span> €</p>
+      <button class="action-btn" id="collect-revenus">Collecter revenus</button>
+      <button class="action-btn" id="close-details">Fermer</button>
+    </section>
+
+  </main>
+
+  <!-- Script JS spécifique entreprises -->
+  <script src="js/entreprises.js"></script>
+</body>
+</html>
