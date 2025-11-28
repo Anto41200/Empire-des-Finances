@@ -1,99 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Empire des Finances</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empire des Finances – Connexion</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
 </head>
 <body>
+  <div class="login-container">
+    <h1>Connexion</h1>
+    <input type="email" id="login-email" placeholder="Email">
+    <input type="password" id="login-password" placeholder="Mot de passe">
+    <button id="login-btn">Se connecter</button>
 
-<header>
-  <div class="header-left">🏛️ Empire des Finances</div>
-  <nav class="header-right">
-    <button class="nav-btn" onclick="showAccueil()">Accueil</button>
-    <button class="nav-btn" onclick="showProprietes()">Propriétés</button>
-    <button class="nav-btn" onclick="showEntreprises()">Entreprises</button>
-    <button class="nav-btn" onclick="showBanque()">Banque</button>
-    <button class="nav-btn" onclick="showDemocratie()">Démocratie</button>
-    <button class="nav-btn" onclick="showChat()">Chat</button>
-  </nav>
-</header>
-
-<main id="container">
-
-  <!-- LOGIN CARD -->
-  <div class="card" id="loginCard">
-    <h2>Connexion</h2>
-    <input id="emailInput" type="email" placeholder="Email (servira d'ID)">
-    <input id="usernameInput" type="text" placeholder="Nom du joueur">
-    <div class="controls">
-      <button id="loginBtn" class="btn">Se connecter / Créer compte</button>
-    </div>
-    <div class="controls">
-      <button id="googleLoginBtn" class="btn alt">Connexion Google</button>
-    </div>
-    <p class="small">Les données sont sauvegardées dans Firebase.</p>
+    <h2>Créer un compte</h2>
+    <input type="email" id="register-email" placeholder="Email">
+    <input type="password" id="register-password" placeholder="Mot de passe">
+    <input type="password" id="register-confirm" placeholder="Confirmer le mot de passe">
+    <button id="register-btn">Créer un compte</button>
   </div>
 
-  <!-- PLAYER INFO CARD -->
-  <div class="card hidden" id="playerCard">
-    <h2>Informations du Joueur</h2>
-    <p><b>Email :</b> <span id="emailDisplay"></span></p>
-    <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
-    <p><b>Patrimoine :</b> <span id="capitalDisplay"></span> §</p>
-    <p><b>Liquidités :</b> <span id="liquiditeDisplay"></span> §</p>
-    <p><b>Nombre de biens :</b> <span id="nbBiensDisplay"></span></p>
-    <p><b>Nombre d'entreprises :</b> <span id="nbEntreprisesDisplay"></span></p>
-    <div class="controls">
-      <button class="btn alt" onclick="logout()">Se déconnecter</button>
-    </div>
-  </div>
-
-  <!-- PROPRIETES CARD -->
-  <div id="proprietesContent" class="card hidden">
-    <h2>Propriétés</h2>
-    <div class="proprietes-menu controls">
-      <button class="btn" onclick="showAcheter()">🏠 Acheter</button>
-      <button class="btn alt" onclick="showGerer()">⚙️ Gérer</button>
-    </div>
-    <div id="proprietesDetail"></div>
-  </div>
-
-  <!-- DYNAMIC CONTENT -->
-  <div id="content" class="card hidden">
-    <h2>Bienvenue dans Empire des Finances</h2>
-    <p>Connecte-toi pour démarrer. 1 mois = 4h réelles (1 jour ≈ 8 minutes)</p>
-  </div>
-
-</main>
-
-<!-- FIREBASE INIT -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBAuJkFTlYHoKyZiHiAAi-VxcNpZ-FAA9k",
-  authDomain: "empire-des-finances.firebaseapp.com",
-  projectId: "empire-des-finances",
-  storageBucket: "empire-des-finances.appspot.com",
-  messagingSenderId: "276513960656",
-  appId: "1:276513960656:web:b4440b88b797a4a6fa64d5"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-window.db = db;
-window.auth = auth;
-window.GoogleAuthProvider = GoogleAuthProvider;
-</script>
-
-<!-- MAIN SCRIPT -->
-<script type="module" src="script.js"></script>
-
+  <script src="js/auth.js"></script>
 </body>
 </html>
