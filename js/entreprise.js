@@ -1,3 +1,7 @@
+import { EDF } from './ui.js';
+import { db } from './firebase-config.js';
+import { doc, setDoc, getDoc, onSnapshot } from "firebase/firestore";
+
 const btnAgri = document.getElementById('create-agri');
 const btnCom = document.getElementById('create-com');
 const listeDiv = document.getElementById('liste');
@@ -9,19 +13,20 @@ const detRevenus = document.getElementById('det-revenus');
 const btnCollect = document.getElementById('collect-revenus');
 const btnClose = document.getElementById('close-details');
 
-auth.onAuthStateChanged(user => {
-  if(!user) { window.location.href='index.html'; return; }
-  EDF.currentUserId = user.uid;
-  renderListe();
+let currentEntreprise = null;
 
-  btnAgri?.addEventListener('click', ()=>creerEntreprise('agricole'));
-  btnCom?.addEventListener('click', ()=>creerEntreprise('commerciale'));
+onSnapshot(doc(db, 'users', EDF.currentUserId), () => {
+  renderListe();
 });
+
+btnAgri?.addEventListener('click', ()=>creerEntreprise('agricole'));
+btnCom?.addEventListener('click', ()=>creerEntreprise('commerciale'));
 
 async function creerEntreprise(type){
   const prix = type==='agricole'?20000:30000;
-  const doc = await db.collection('users').doc(EDF.currentUserId).get();
-  const data = doc.data();
+  const docRef = doc(db, 'users', EDF.currentUserId);
+  const userDoc = await getDoc(docRef);
+  const data = userDoc.data();
   if(data.capital < prix){ return alert("Pas assez de capital !"); }
   data.capital -= prix;
   if(!data.entreprises) data.entreprises=[];
@@ -33,13 +38,14 @@ async function creerEntreprise(type){
     revenus: type==='agricole'?50:75
   };
   data.entreprises.push(entreprise);
-  await db.collection('users').doc(EDF.currentUserId).set(data);
+  await setDoc(docRef, data);
   renderListe();
 }
 
 async function renderListe(){
-  const doc = await db.collection('users').doc(EDF.currentUserId).get();
-  const data = doc.data();
+  const docRef = doc(db, 'users', EDF.currentUserId);
+  const userDoc = await getDoc(docRef);
+  const data = userDoc.data();
   listeDiv.innerHTML = '';
   if(!data.entreprises || data.entreprises.length===0){ listeDiv.innerHTML='<p>Aucune entreprise</p>'; return; }
   data.entreprises.forEach(e=>{
@@ -51,10 +57,10 @@ async function renderListe(){
   });
 }
 
-let currentEntreprise=null;
 async function voirEntreprise(id){
-  const doc = await db.collection('users').doc(EDF.currentUserId).get();
-  const data = doc.data();
+  const docRef = doc(db, 'users', EDF.currentUserId);
+  const userDoc = await getDoc(docRef);
+  const data = userDoc.data();
   const e = data.entreprises.find(x=>x.id===id);
   if(!e) return;
   currentEntreprise = e;
@@ -69,22 +75,24 @@ btnClose?.addEventListener('click', ()=>{ detailsPanel.classList.add('hidden'); 
 
 btnCollect?.addEventListener('click', async ()=>{
   if(!currentEntreprise) return;
-  const doc = await db.collection('users').doc(EDF.currentUserId).get();
-  const data = doc.data();
+  const docRef = doc(db, 'users', EDF.currentUserId);
+  const userDoc = await getDoc(docRef);
+  const data = userDoc.data();
   data.capital += currentEntreprise.revenus;
-  await db.collection('users').doc(EDF.currentUserId).set(data);
+  await setDoc(docRef, data);
   alert(`Revenus ${currentEntreprise.revenus} € collectés !`);
   renderListe();
 });
 
 // Revenus automatiques toutes les minutes
 setInterval(async ()=>{
-  const doc = await db.collection('users').doc(EDF.currentUserId).get();
-  const data = doc.data();
+  const docRef = doc(db, 'users', EDF.currentUserId);
+  const userDoc = await getDoc(docRef);
+  const data = userDoc.data();
   if(!data.entreprises) return;
   let total=0;
   data.entreprises.forEach(e=> total+=e.revenus);
   data.capital += total;
-  await db.collection('users').doc(EDF.currentUserId).set(data);
+  await setDoc(docRef, data);
   renderListe();
 },60000);
