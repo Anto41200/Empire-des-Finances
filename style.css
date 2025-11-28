@@ -1,246 +1,66 @@
-/* -------------------------------
-   🎨 THEME : NOBLE & CHALEUREUX
---------------------------------*/
-
-:root {
-  --bg: #3b2f2f;                 /* Brun foncé chaleureux */
-  --bg-light: #4a3b3b;           /* Brun clair */
-
-  --card: #f9f1e7;               /* Ivoire noble */
-  --card-light: #fff8ef;         /* Plus doux */
-
-  --accent: #c89f50;             /* Or mat */
-  --accent-hover: #b98b34;       /* Or plus intense */
-
-  --text-dark: #2b1f1f;          /* Brun profond */
-  --text-muted: #7d6e6e;
-
-  --shadow: 0 10px 30px rgba(0,0,0,0.3);
-  --radius: 16px;
-  --radius-big: 22px;
+/* -------------------- ANIMATION DOUCE SUR LES CARTES -------------------- */
+@keyframes floatCard {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
 }
 
-/* GLOBAL */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: "Georgia", "Times New Roman", serif; /* Police noble */
+.card.float {
+  animation: floatCard 3s ease-in-out infinite;
 }
 
-body {
-  background: linear-gradient(180deg, #3d2f2f, #201616);
-  color: var(--text-dark);
-  padding: 25px;
-}
-
-/* -------------------------------
-   HEADER / NAV
---------------------------------*/
-
-.menu button {
-  background: #c8a46a;
-  padding: 12px 18px;
-  border-radius: 12px;
-  border: none;
-  color: #fff;
-  font-size: 17px;
-  margin: 5px 0;
-  cursor: pointer;
-  transition: 0.2s;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-.menu button:hover {
-  background: #b5894d;
-  transform: translateY(-2px);
-}
-
-.menu button.logout {
-  background: #8a3a3a;
-}
-
-.menu button.logout:hover {
-  background: #6d2d2d;
-}
-
-/* -------------------------------
-   CARDS
---------------------------------*/
-
-.card {
-  background: var(--card);
-  border-radius: var(--radius-big);
-  padding: 25px;
-  box-shadow: var(--shadow);
-  border: 3px solid #d5b68a; /* bordure or mat */
-  transition: 0.3s;
-}
-
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 36px rgba(0,0,0,0.35);
-}
-
-/* -------------------------------
-   BUTTONS
---------------------------------*/
-
-.btn {
-  padding: 12px 20px;
-  border-radius: 14px;
-  border: none;
-  background: var(--accent);
-  color: white;
+/* -------------------- EFFET D’ARGENT QUI AUGMENTE -------------------- */
+.money-increase {
+  color: var(--gold);
   font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-  font-size: 16px;
-  box-shadow: inset 0 0 0 2px #e7d3a8;
+  animation: moneyAnim 1s ease forwards;
 }
 
+@keyframes moneyAnim {
+  0% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(-15px); opacity: 0.8; }
+  100% { transform: translateY(-30px); opacity: 0; }
+}
+
+/* -------------------- HOVER BOUTONS AMÉLIORÉS -------------------- */
 .btn:hover {
-  background: var(--accent-hover);
   transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
 }
 
-.btn.google {
-  background: #8d6742;
-  color: #fff;
+/* -------------------- SUBNAV BOUTONS DORÉS -------------------- */
+.sub-btn.active {
+  background: var(--gold);
+  color: var(--card);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.btn.google:hover {
-  background: #7b5634;
+/* -------------------- BADGES DYNAMIQUES -------------------- */
+.badge.high-value {
+  background: var(--gold);
+  color: var(--card);
+  font-weight: bold;
+  animation: pulse 1.5s infinite;
 }
 
-.btn.alt {
-  background: #8c7b6a;
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
-.btn.alt:hover {
-  background: #6d5e52;
+/* -------------------- CHAT ANIMÉ -------------------- */
+#chatMessages p {
+  transition: all 0.3s ease;
+}
+#chatMessages p.new-msg {
+  background: rgba(255, 223, 100, 0.2);
+  border-radius: 8px;
+  padding: 2px 6px;
+  animation: fadeIn 0.6s ease;
 }
 
-/* FULL WIDTH BUTTON */
-.full {
-  width: 100%;
-}
-
-/* -------------------------------
-   INPUTS
---------------------------------*/
-
-input {
-  width: 100%;
-  margin: 10px 0;
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 2px solid #ddc3a4;
-  background: #fffaf3;
-  font-size: 15px;
-  transition: 0.2s;
-}
-
-input:focus {
-  outline: none;
-  border-color: #c89f50;
-  background: #fffdf8;
-}
-
-/* -------------------------------
-   SUBNAV (Acheter / Gérer)
---------------------------------*/
-
-.subnav {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 15px;
-}
-
-.sub-btn {
-  padding: 10px 18px;
-  background: #d1b28a;
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: 0.2s;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-}
-
-.sub-btn:hover {
-  background: #b8976a;
-  transform: translateY(-2px);
-}
-
-/* -------------------------------
-   GRID POUR BIENS
---------------------------------*/
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-  gap: 18px;
-  margin-top: 20px;
-}
-
-/* -------------------------------
-   CHAT
---------------------------------*/
-
-#chatContainer {
-  background: #f8f0e4;
-  border-radius: 16px;
-  border: 3px solid #d5b68a;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-#chatMessages {
-  flex: 1;
-  padding: 12px;
-  overflow-y: auto;
-  background: #f4e8d8;
-  font-size: 15px;
-}
-
-#chatMessages p b {
-  color: #654321;
-}
-
-#chatInput {
-  display: flex;
-  border-top: 2px solid #d5b68a;
-}
-
-#chatInput input {
-  border-radius: 0;
-  border: none;
-}
-
-#chatInput button {
-  background: var(--accent);
-  border-radius: 0;
-}
-
-/* -------------------------------
-   CENTER BOX LOGIN
---------------------------------*/
-
-.center-box {
-  max-width: 420px;
-  margin: 30px auto;
-}
-
-/* -------------------------------
-   RESPONSIVE
---------------------------------*/
-
-@media (max-width: 900px) {
-  .menu {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
