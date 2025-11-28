@@ -84,6 +84,36 @@ window.GoogleAuthProvider = GoogleAuthProvider;
 
 <!-- MAIN SCRIPT -->
 <script type="module" src="script.js"></script>
+<!-- DYNAMIC CONTENT -->
+<div id="content" class="card hidden">
+  <h2>Bienvenue dans Empire des Finances</h2>
+  <p>Connecte-toi pour démarrer. 1 mois = 4h réelles (1 jour ≈ 8 minutes)</p>
+</div>
+
+<!-- Propriétés -->
+<div id="proprietesContent" class="card hidden">
+  <h2>Propriétés</h2>
+  <nav>
+    <button onclick="showAcheter()">Acheter</button>
+    <button onclick="showGerer()">Gérer</button>
+  </nav>
+  
+  <!-- Section Acheter -->
+  <div id="acheterSection" class="hidden">
+    <h3>Acheter des biens</h3>
+    <div class="grid">
+      <!-- Dynamique des biens à acheter, comme dans ton code actuel -->
+    </div>
+  </div>
+  
+  <!-- Section Gérer -->
+  <div id="gererSection" class="hidden">
+    <h3>Gérer vos propriétés</h3>
+    <div class="grid">
+      <!-- Liste des biens possédés avec des options de gestion (renommer, vendre, etc.) -->
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
