@@ -1,9 +1,21 @@
-import { doc, setDoc, getDoc, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+/******************************************************************
+ *  EMPIRE DES FINANCES — SCRIPT.JS COMPLET
+ *  Version : ULTRA ÉVOLUÉE + TERRAINS + IMPÔTS + ÉVÉNEMENTS + BANQUE
+ ******************************************************************/
+
+import {
+    doc, setDoc, getDoc, collection, addDoc, onSnapshot 
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
 import { signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
+/***************************************************************
+ * UI ELEMENTS
+ ***************************************************************/
 const loginCard = document.getElementById("loginCard");
 const playerCard = document.getElementById("playerCard");
 const content = document.getElementById("content");
+const proprietesPage = document.getElementById("proprietesPage");
 
 const emailInput = document.getElementById("emailInput");
 const usernameInput = document.getElementById("usernameInput");
@@ -17,24 +29,38 @@ const liquiditeDisplay = document.getElementById("liquiditeDisplay");
 const nbBiensDisplay = document.getElementById("nbBiensDisplay");
 const nbEntreprisesDisplay = document.getElementById("nbEntreprisesDisplay");
 
+/***************************************************************
+ * PLAYER DATA
+ ***************************************************************/
 let currentPlayer = null;
 let playerData = null;
 
-// INITIAL PLAYER STRUCTURE
+// Default player structure
 const defaultPlayerData = {
+    username: "",
     capital: 300000,
     liquidite: 50000,
     biens: [],
     entreprises: [],
+    dettes: [],
     historique: [],
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    lastLoyer: Date.now(),
+    lastImpots: Date.now(),
+    lastEvenement: Date.now(),
 };
 
-// LOGIN
+/***************************************************************
+ * LOGIN
+ ***************************************************************/
 loginBtn.addEventListener("click", async () => {
     const email = emailInput.value.trim();
     const username = usernameInput.value.trim() || "Joueur";
-    if (!email) { alert("Email requis"); return; }
+
+    if (!email) {
+        alert("Email requis !");
+        return;
+    }
     currentPlayer = email;
     await loadPlayer(email, username);
 });
@@ -48,21 +74,27 @@ googleLoginBtn.addEventListener("click", async () => {
     await loadPlayer(email, username);
 });
 
-// LOAD OR CREATE PLAYER
-async function loadPlayer(email, username){
+/***************************************************************
+ * LOAD PLAYER
+ ***************************************************************/
+async function loadPlayer(email, username) {
     const docRef = doc(window.db, "players", email);
     const docSnap = await getDoc(docRef);
-    if (!docSnap.exists()){
+
+    if (!docSnap.exists()) {
         await setDoc(docRef, { ...defaultPlayerData, username });
         playerData = { ...defaultPlayerData, username };
     } else {
         playerData = docSnap.data();
     }
+
     updateUI();
 }
 
-// UPDATE UI
-function updateUI(){
+/***************************************************************
+ * UPDATE UI
+ ***************************************************************/
+function updateUI() {
     loginCard.classList.add("hidden");
     playerCard.classList.remove("hidden");
     content.classList.remove("hidden");
@@ -75,157 +107,355 @@ function updateUI(){
     nbEntreprisesDisplay.textContent = playerData.entreprises.length;
 }
 
-// LOGOUT
-function logout(){
+/***************************************************************
+ * LOGOUT
+ ***************************************************************/
+function logout() {
     currentPlayer = null;
     playerData = null;
     loginCard.classList.remove("hidden");
     playerCard.classList.add("hidden");
     content.classList.add("hidden");
 }
+window.logout = logout;
 
-// NAVIGATION
-window.showAccueil = () => { content.innerHTML = "<h2>Accueil</h2><p>Bienvenue à Empire des Finances.</p>"; };
-window.showProprietes = () => { renderBiens(); };
-window.showEntreprises = () => { renderEntreprises(); };
-window.showBanque = () => { content.innerHTML = "<h2>Banque</h2><p>Vos comptes et transactions seront ici.</p>"; };
-window.showDemocratie = () => { content.innerHTML = "<h2>Démocratie</h2><p>Page vide pour l'instant.</p>"; };
-window.showChat = () => { renderChat(); };
+/***************************************************************
+ * NAVIGATION
+ ***************************************************************/
+window.showAccueil = () => {
+    proprietesPage.classList.add("hidden");
+    content.innerHTML = `
+        <h2>Accueil</h2>
+        <p>Bienvenue ! Le temps avance automatiquement. Événements, impôts, loyers 
+        et intérêts fonctionnent même hors connexion.</p>
+    `;
+};
 
-// BIENS PERSONNELS
-const biensList = ["Appartement","Maison","Villa","Loft","Manoir","Château"];
-function renderBiens(){
-    let html = `<h2>Propriétés</h2><div class="grid">`;
-    biensList.forEach((bien,i) => {
-        html += `<div class="card">
-            <h3>${bien}</h3>
-            <p>Options: ${bien==="Château"?"Tourisme, Monument Historique, Événement": "Location classique"}</p>
-            <button class="btn" onclick="acheterBien('${bien}')">Acheter</button>
-            <button class="btn alt" onclick="vendreBien('${bien}')">Vendre</button>
-        </div>`;
-    });
-    html += "</div>";
-    content.innerHTML = html;
+window.showProprietes = () => {
+    content.innerHTML = "";
+    proprietesPage.classList.remove("hidden");
+    showAcheter();
+};
+
+window.showEntreprises = () => {
+    proprietesPage.classList.add("hidden");
+    content.innerHTML = "<h2>Entreprises</h2><p>À venir.</p>";
+};
+
+window.showBanque = () => {
+    proprietesPage.classList.add("hidden");
+    renderBanque();
+};
+
+window.showDemocratie = () => {
+    proprietesPage.classList.add("hidden");
+    content.innerHTML = "<h2>Démocratie</h2><p>Bientôt disponible.</p>";
+};
+
+window.showChat = () => {
+    proprietesPage.classList.add("hidden");
+    renderChat();
+};
+
+/***************************************************************
+ * PROPRIETES — Acheter / Gérer
+ ***************************************************************/
+window.showAcheter = () => {
+    document.getElementById("acheterSection").classList.remove("hidden");
+    document.getElementById("gererSection").classList.add("hidden");
+    renderAcheterBiens();
+};
+
+window.showGerer = () => {
+    document.getElementById("gererSection").classList.remove("hidden");
+    document.getElementById("acheterSection").classList.add("hidden");
+    renderGererBiens();
+};
+
+/***************************************************************
+ * LISTE DES BIENS
+ ***************************************************************/
+const biensList = [
+    "Appartement",
+    "Maison",
+    "Villa",
+    "Loft",
+    "Manoir",
+    "Château",
+    "Terrain constructible"
+];
+
+/***************************************************************
+ * MARCHÉ DYNAMIQUE
+ ***************************************************************/
+function calculerPrix(bien) {
+    const basePrices = {
+        "Appartement": 80000,
+        "Maison": 150000,
+        "Villa": 300000,
+        "Loft": 250000,
+        "Manoir": 600000,
+        "Château": 2000000,
+        "Terrain constructible": 120000
+    };
+
+    const base = basePrices[bien] || 100000;
+
+    // fluctuation de -15% à +15%
+    const fluct = 1 + (Math.random() * 0.3 - 0.15);
+
+    return Math.floor(base * fluct);
 }
 
-// ENTREPRISES
-const entreprisesList = ["Ferme","Commerce","Service"];
-function renderEntreprises(){
-    let html = `<h2>Entreprises</h2><div class="grid">`;
-    entreprisesList.forEach(ent => {
-        html += `<div class="card">
-            <h3>${ent}</h3>
-            <button class="btn" onclick="creerEntreprise('${ent}')">Créer</button>
-            <button class="btn alt" onclick="dissoudreEntreprise('${ent}')">Dissoudre</button>
-        </div>`;
-    });
-    html += "</div>";
-    content.innerHTML = html;
+/***************************************************************
+ * LOYERS (toutes les 4 heures)
+ ***************************************************************/
+function calculerLoyer(bien) {
+    const loyers = {
+        "Appartement": 700,
+        "Maison": 1200,
+        "Villa": 2500,
+        "Loft": 1700,
+        "Manoir": 4500,
+        "Château": 8000,
+        "Terrain constructible": 0
+    };
+    return loyers[bien] || 0;
 }
 
-// FUNCTIONS BIENS
-window.acheterBien = (bien) => {
+function appliquerLoyers() {
+    const now = Date.now();
+    const fourHours = 4 * 60 * 60 * 1000;
+
+    if (now - playerData.lastLoyer < fourHours) return;
+
+    let total = 0;
+    playerData.biens.forEach(b => total += calculerLoyer(b.type));
+
+    playerData.liquidite += total;
+    playerData.lastLoyer = now;
+
+    savePlayer();
+}
+
+/***************************************************************
+ * IMPÔTS (1 fois par jour)
+ ***************************************************************/
+function appliquerImpots() {
+    const now = Date.now();
+    const day = 24 * 60 * 60 * 1000;
+
+    if (now - playerData.lastImpots < day) return;
+
+    const impot = Math.floor(playerData.capital * 0.02);
+    playerData.liquidite -= impot;
+    playerData.lastImpots = now;
+    savePlayer();
+}
+
+/***************************************************************
+ * EVENEMENTS ALEATOIRES (toutes les 8h)
+ ***************************************************************/
+function evenementAleatoire() {
+    const now = Date.now();
+    const eightHours = 8 * 60 * 60 * 1000;
+
+    if (now - playerData.lastEvenement < eightHours) return;
+
+    const chance = Math.random();
+
+    // catastrophes 20%
+    if (chance < 0.2) {
+        if (playerData.biens.length > 0) {
+            const index = Math.floor(Math.random() * playerData.biens.length);
+            playerData.liquidite -= 5000;
+            alert("🌪️ Catastrophe ! Une réparation coûte 5 000 §");
+        }
+    }
+
+    // événements positifs 20%
+    else if (chance < 0.4) {
+        const gain = Math.floor(5000 + Math.random() * 20000);
+        playerData.liquidite += gain;
+        alert("🎁 Événement positif ! Vous gagnez " + gain + " §");
+    }
+
+    playerData.lastEvenement = now;
+    savePlayer();
+}
+
+/***************************************************************
+ * ACHATS / VENTES / TERRAINS + CONSTRUCTION
+ ***************************************************************/
+function renderAcheterBiens() {
+    let html = "<div class='grid'>";
+
+    biensList.forEach(b => {
+        const prix = calculerPrix(b);
+
+        html += `
+            <div class="card">
+                <h3>${b}</h3>
+                <p>Prix : ${prix.toLocaleString()} §</p>
+                <button class="btn" onclick="acheterBien('${b}', ${prix})">Acheter</button>
+            </div>`;
+    });
+
+    html += "</div>";
+    document.getElementById("acheterSection").innerHTML = html;
+}
+
+window.acheterBien = (bien, prix) => {
+    if (playerData.liquidite < prix) return alert("Fonds insuffisants !");
+    playerData.liquidite -= prix;
     playerData.biens.push({ type: bien, date: new Date().toISOString() });
     savePlayer();
     updateUI();
-    alert(bien + " acheté !");
+    renderAcheterBiens();
 };
 
-window.vendreBien = (bien) => {
-    const index = playerData.biens.findIndex(b => b.type === bien);
-    if(index>-1){ playerData.biens.splice(index,1); savePlayer(); updateUI(); alert(bien + " vendu !"); }
-    else alert("Vous ne possédez pas ce bien.");
-};
+function renderGererBiens() {
+    let html = "<div class='grid'>";
 
-// FUNCTIONS ENTREPRISES
-window.creerEntreprise = (ent) => {
-    playerData.entreprises.push({ type: ent, date: new Date().toISOString() });
-    savePlayer();
-    updateUI();
-    alert(ent + " créée !");
-};
+    playerData.biens.forEach((b, i) => {
+        html += `
+            <div class="card">
+                <h3>${b.type}</h3>
+                <p>Depuis le : ${new Date(b.date).toLocaleDateString()}</p>
 
-window.dissoudreEntreprise = (ent) => {
-    const index = playerData.entreprises.findIndex(e => e.type===ent);
-    if(index>-1){ playerData.entreprises.splice(index,1); savePlayer(); updateUI(); alert(ent + " dissoute !"); }
-    else alert("Vous n'avez pas cette entreprise.");
-};
+                ${b.type === "Terrain constructible" && !b.construction ? `
+                    <button class="btn" onclick="construire(${i})">Construire dessus</button>
+                ` : ""}
 
-// SAVE PLAYER
-async function savePlayer(){
-    if(!currentPlayer) return;
-    const docRef = doc(window.db, "players", currentPlayer);
-    await setDoc(docRef, playerData);
+                <button class="btn alt" onclick="vendreBien(${i})">Vendre</button>
+            </div>`;
+    });
+
+    html += "</div>";
+    document.getElementById("gererSection").innerHTML = html;
 }
 
-// CHAT
-function renderChat(){
-    content.innerHTML = `<h2>Chat Global</h2>
-    <div id="chatContainer">
-      <div id="chatMessages"></div>
-      <div id="chatInput">
-        <input type="text" id="chatMsg" placeholder="Écrire un message...">
-        <button onclick="sendMessage()">Envoyer</button>
-      </div>
-    </div>`;
+window.construire = (index) => {
+    const choix = prompt("Que construire ? Ex : Maison, Villa, Loft…");
+    if (!choix) return;
+
+    playerData.biens[index].construction = choix;
+    savePlayer();
+    renderGererBiens();
+};
+
+window.vendreBien = (index) => {
+    playerData.biens.splice(index, 1);
+    savePlayer();
+    renderGererBiens();
+};
+
+/***************************************************************
+ * SYSTEME BANCAIRE — EMPRUNTS
+ ***************************************************************/
+function renderBanque() {
+    content.innerHTML = `
+        <h2>Banque</h2>
+        <p>Liquidité : ${playerData.liquidite.toLocaleString()} §</p>
+        <button class="btn" onclick="ouvrirPret()">💰 Faire un emprunt</button>
+
+        <h3>Mes dettes</h3>
+    `;
+
+    playerData.dettes.forEach((d, i) => {
+        content.innerHTML += `
+            <div class="card">
+                <p>Montant restant : ${d.restant.toLocaleString()} §</p>
+                <p>Mensualité : ${d.mensualite.toLocaleString()} §</p>
+                <button class="btn alt" onclick="rembourser(${i})">Rembourser 1 mensualité</button>
+            </div>`;
+    });
+}
+
+window.ouvrirPret = () => {
+    const montant = parseInt(prompt("Montant du prêt ?"), 10);
+    if (!montant) return;
+
+    const interet = 1.05; // 5%
+    const mensualite = Math.floor(montant * interet / 10); // remboursé en 10 fois
+
+    playerData.liquidite += montant;
+    playerData.dettes.push({
+        restant: Math.floor(montant * interet),
+        mensualite
+    });
+
+    savePlayer();
+    renderBanque();
+};
+
+window.rembourser = (index) => {
+    const dette = playerData.dettes[index];
+    if (playerData.liquidite < dette.mensualite) return alert("Pas assez d'argent !");
+
+    playerData.liquidite -= dette.mensualite;
+    dette.restant -= dette.mensualite;
+
+    if (dette.restant <= 0) playerData.dettes.splice(index, 1);
+
+    savePlayer();
+    renderBanque();
+};
+
+/***************************************************************
+ * CHAT GLOBAL
+ ***************************************************************/
+function renderChat() {
+    content.innerHTML = `
+        <h2>Chat Global</h2>
+        <div id="chatContainer">
+            <div id="chatMessages"></div>
+            <div id="chatInput">
+                <input id="chatMsg" type="text" placeholder="Message...">
+                <button onclick="sendMessage()">Envoyer</button>
+            </div>
+        </div>
+    `;
 
     const chatRef = collection(window.db, "chat");
     const chatMessages = document.getElementById("chatMessages");
 
-    onSnapshot(chatRef, snapshot => {
+    onSnapshot(chatRef, snap => {
         chatMessages.innerHTML = "";
-        snapshot.docs.forEach(doc => {
-            const msg = doc.data();
-            const p = document.createElement("p");
-            p.innerHTML = `<b>${msg.username}:</b> ${msg.message}`;
-            chatMessages.appendChild(p);
+        snap.docs.forEach(d => {
+            const msg = d.data();
+            chatMessages.innerHTML += `<p><b>${msg.username}:</b> ${msg.message}</p>`;
         });
-        chatMessages.scrollTop = chatMessages.scrollHeight;
     });
 }
 
 window.sendMessage = async () => {
     const msgInput = document.getElementById("chatMsg");
-    if(!msgInput.value.trim()) return;
-    await addDoc(collection(window.db,"chat"), {
+    if (!msgInput.value.trim()) return;
+
+    await addDoc(collection(window.db, "chat"), {
         username: playerData.username,
         message: msgInput.value.trim(),
         timestamp: new Date().toISOString()
     });
+
     msgInput.value = "";
 };
 
-// AUTO SAVE PERIODIQUE
-setInterval(() => { savePlayer(); }, 15000);
-
-// NAVIGATION POUR PROPRIETES
-window.showProprietes = () => { 
-    document.getElementById("proprietesContent").classList.remove("hidden"); 
-    document.getElementById("acheterSection").classList.remove("hidden");
-    document.getElementById("gererSection").classList.add("hidden");
-};
-
-window.showAcheter = () => { 
-    document.getElementById("acheterSection").classList.remove("hidden"); 
-    document.getElementById("gererSection").classList.add("hidden");
-};
-
-window.showGerer = () => { 
-    document.getElementById("gererSection").classList.remove("hidden"); 
-    document.getElementById("acheterSection").classList.add("hidden");
-};
-
-// BIENS DANS "Gérer" (à afficher seulement pour les biens déjà possédés)
-function renderGererBiens() {
-    let html = `<h2>Mes Propriétés</h2><div class="grid">`;
-    playerData.biens.forEach(bien => {
-        html += `<div class="card">
-            <h3>${bien.type}</h3>
-            <p>Propriétaire depuis: ${new Date(bien.date).toLocaleDateString()}</p>
-            <button class="btn" onclick="renommerBien('${bien.type}')">Renommer</button>
-            <button class="btn alt" onclick="vendreBien('${bien.type}')">Vendre</button>
-        </div>`;
-    });
-    html += "</div>";
-    document.getElementById("gererSection").innerHTML = html;
+/***************************************************************
+ * SAUVEGARDE AUTOMATIQUE
+ ***************************************************************/
+async function savePlayer() {
+    if (!currentPlayer) return;
+    await setDoc(doc(window.db, "players", currentPlayer), playerData);
 }
+
+/***************************************************************
+ * TICK AUTOMATIQUE
+ ***************************************************************/
+setInterval(() => {
+    appliquerLoyers();
+    appliquerImpots();
+    evenementAleatoire();
+    savePlayer();
+}, 5000);
