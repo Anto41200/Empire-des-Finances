@@ -1,237 +1,266 @@
-/* ----------------------------------------------------------
-   EMPIRE DES FINANCES — THEME PREMIUM NOBLE BUSINESS
-   Version : PRO — Luxe + Modern Business
------------------------------------------------------------*/
+/* -------------------------------
+   🎨 THEME : NOBLE & CHALEUREUX
+--------------------------------*/
 
 :root {
-  /* ---- Couleurs nobles ---- */
-  --brun-fonce: #3b2f2f;
-  --brun-clair: #4a3b3b;
-  --ivoire: #f9f1e7;
-  --ivoire-soft: #fff8ef;
-
-  /* ---- Couleurs modern business ---- */
-  --bleu-nuit: #1d2a3a;
-  --bleu-profond: #24364c;
-
-  /* ---- Accents or ---- */
-  --or-mat: #c89f50;
-  --or-brillant: #e2bf6c;
-  --or-intense: #b98b34;
-
-  /* ---- UI ---- */
-  --radius: 18px;
-  --radius-big: 26px;
-  --shadow: 0 12px 30px rgba(0,0,0,0.35);
-  --shadow-soft: 0 8px 18px rgba(0,0,0,0.22);
+  --bg-dark: #3b2f2f;             /* Brun foncé chaleureux */
+  --bg-light: #4a3b3b;            /* Brun clair */
+  --card: #f9f1e7;                /* Ivoire noble */
+  --card-light: #fff8ef;          /* Plus doux */
+  --accent: #c89f50;              /* Or mat */
+  --accent-hover: #b98b34;        /* Or plus intense */
+  --text-dark: #2b1f1f;           /* Brun profond */
+  --text-muted: #7d6e6e;
+  --shadow: 0 10px 30px rgba(0,0,0,0.3);
+  --radius: 16px;
+  --radius-big: 22px;
 }
 
-/* ----------------------------------------------------------
-   GLOBAL
------------------------------------------------------------*/
+/* -------------------------------
+   GLOBAL RESET
+--------------------------------*/
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
   font-family: "Georgia", "Times New Roman", serif;
 }
 
 body {
-  background: linear-gradient(180deg, var(--bleu-nuit), var(--brun-fonce));
-  padding: 30px;
-  color: var(--brun-fonce);
+  background: linear-gradient(180deg, #3d2f2f, #201616);
+  color: var(--text-dark);
+  min-height: 100vh;
+  padding: 20px;
 }
 
-/* Classe utilitaire */
-.hidden {
-  display: none !important;
-}
-
-/* ----------------------------------------------------------
-   HEADER PREMIUM
------------------------------------------------------------*/
+/* -------------------------------
+   HEADER / NAV
+--------------------------------*/
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--bleu-profond);
-  color: white;
-  padding: 18px 28px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
   margin-bottom: 25px;
 }
 
 .header-left {
   font-size: 24px;
   font-weight: bold;
-  letter-spacing: 1px;
+  color: var(--accent);
 }
 
 .menu {
   display: flex;
-  gap: 12px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-/* NAV BUTTON PREMIUM */
 .menu button {
-  background: var(--or-mat);
-  color: white;
-  padding: 10px 18px;
-  border-radius: 12px;
+  background: var(--accent);
   border: none;
-  font-size: 15px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  padding: 10px 16px;
   cursor: pointer;
-  transition: 0.25s;
-  box-shadow: var(--shadow-soft);
+  transition: 0.3s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .menu button:hover {
-  background: var(--or-intense);
-  transform: translateY(-3px);
+  background: var(--accent-hover);
+  transform: translateY(-2px);
 }
 
-/* ----------------------------------------------------------
-   CARD PREMIUM
------------------------------------------------------------*/
+/* -------------------------------
+   CARDS
+--------------------------------*/
 .card {
-  background: var(--ivoire);
-  padding: 28px;
+  background: var(--card);
   border-radius: var(--radius-big);
+  padding: 25px;
   box-shadow: var(--shadow);
-  border: 2px solid var(--or-brillant);
+  border: 3px solid #d5b68a;
   margin-bottom: 20px;
   transition: 0.3s;
 }
 
 .card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 35px rgba(0,0,0,0.40);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.35);
 }
 
-/* ----------------------------------------------------------
-   BUTTONS PRO
------------------------------------------------------------*/
+.hidden {
+  display: none !important;
+}
+
+/* -------------------------------
+   BUTTONS
+--------------------------------*/
 .btn {
-  padding: 12px 22px;
-  border-radius: var(--radius);
-  background: var(--or-mat);
+  padding: 12px 20px;
+  border-radius: 14px;
   border: none;
-  color: white;
-  font-size: 17px;
-  cursor: pointer;
-  transition: 0.25s;
+  background: var(--accent);
+  color: #fff;
   font-weight: bold;
-  box-shadow: inset 0 0 0 2px var(--or-brillant);
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 16px;
+  margin-top: 8px;
+  display: inline-block;
+  box-shadow: inset 0 0 0 2px #e7d3a8;
 }
 
 .btn:hover {
-  background: var(--or-intense);
-  transform: translateY(-3px);
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+.btn.google {
+  background: #8d6742;
+}
+
+.btn.google:hover {
+  background: #7b5634;
 }
 
 .btn.alt {
-  background: var(--bleu-profond);
-  box-shadow: inset 0 0 0 2px var(--or-brillant);
+  background: #8c7b6a;
 }
 
 .btn.alt:hover {
-  background: var(--bleu-nuit);
+  background: #6d5e52;
 }
 
-/* FULL WIDTH */
 .full {
   width: 100%;
 }
 
-/* BUTTON DANGER */
-.btn.logout {
-  background: #8a3a3a;
-}
-
-.btn.logout:hover {
-  background: #712c2c;
-}
-
-/* ----------------------------------------------------------
-   INPUTS PRO
------------------------------------------------------------*/
+/* -------------------------------
+   INPUTS
+--------------------------------*/
 input {
   width: 100%;
-  padding: 12px 15px;
-  border-radius: var(--radius);
-  border: 2px solid var(--or-brillant);
-  background: var(--ivoire-soft);
-  margin: 12px 0;
-  font-size: 16px;
-  transition: 0.25s;
+  margin: 10px 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 2px solid #ddc3a4;
+  background: #fffaf3;
+  font-size: 15px;
+  transition: 0.2s;
 }
 
 input:focus {
   outline: none;
-  border-color: var(--or-mat);
-  background: white;
+  border-color: var(--accent);
+  background: #fffdf8;
 }
 
-/* ----------------------------------------------------------
-   GRID (biens, entreprises, etc.)
------------------------------------------------------------*/
+/* -------------------------------
+   GRID LAYOUT
+--------------------------------*/
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
 }
 
-/* ----------------------------------------------------------
-   CHAT PREMIUM
------------------------------------------------------------*/
+/* -------------------------------
+   SUBNAV (Acheter / Gérer)
+--------------------------------*/
+.subnav {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.sub-btn {
+  padding: 10px 18px;
+  background: #d1b28a;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.sub-btn:hover {
+  background: #b8976a;
+  transform: translateY(-2px);
+}
+
+/* -------------------------------
+   CHAT
+--------------------------------*/
 #chatContainer {
-  background: var(--ivoire-soft);
-  border-radius: var(--radius-big);
-  border: 2px solid var(--or-brillant);
-  overflow: hidden;
+  background: #f8f0e4;
+  border-radius: 16px;
+  border: 3px solid #d5b68a;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  max-height: 400px;
 }
 
 #chatMessages {
-  padding: 15px;
-  background: #f4e8d6;
   flex: 1;
+  padding: 12px;
   overflow-y: auto;
+  font-size: 15px;
+  background: #f4e8d8;
 }
 
 #chatMessages p b {
-  color: var(--bleu-profond);
+  color: #654321;
 }
 
 #chatInput {
   display: flex;
-  border-top: 2px solid var(--or-brillant);
+  border-top: 2px solid #d5b68a;
 }
 
 #chatInput input {
+  flex: 1;
   border-radius: 0;
   border: none;
-  background: white;
+  padding: 10px;
 }
 
 #chatInput button {
   border-radius: 0;
-  background: var(--or-mat);
 }
 
-/* ----------------------------------------------------------
+/* -------------------------------
+   CENTER BOX LOGIN
+--------------------------------*/
+.center-box {
+  max-width: 480px;
+  margin: 30px auto;
+}
+
+/* -------------------------------
    RESPONSIVE
------------------------------------------------------------*/
+--------------------------------*/
 @media (max-width: 900px) {
   .menu {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
-
-  header {
-    flex-direction: column;
-    gap: 14px;
+  #chatContainer {
+    max-height: 300px;
   }
 }
 
+@media (max-width: 500px) {
+  .card {
+    padding: 18px;
+  }
+  .menu button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
