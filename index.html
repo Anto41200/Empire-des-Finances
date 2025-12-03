@@ -1,29 +1,204 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Empire des Finances – Connexion</title>
-  <link rel="stylesheet" href="css/style.css">
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <script src="firebase-config.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empire des Finances – Édition Ultime</title>
+
+    <!-- Style Premium Noble Business -->
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body>
-  <div class="login-container">
-    <h1>Connexion</h1>
-    <input type="email" id="login-email" placeholder="Email">
-    <input type="password" id="login-password" placeholder="Mot de passe">
-    <button id="login-btn">Se connecter</button>
 
-    <h2>Créer un compte</h2>
-    <input type="email" id="register-email" placeholder="Email">
-    <input type="password" id="register-password" placeholder="Mot de passe">
-    <input type="password" id="register-confirm" placeholder="Confirmer le mot de passe">
-    <button id="register-btn">Créer un compte</button>
-  </div>
+    <!-- ========================= HEADER =========================== -->
+    <header>
+        <div class="header-left">🏛️ Empire des Finances — Édition Ultime</div>
 
-  <script src="js/auth.js"></script>
+        <nav class="menu">
+            <button onclick="UI.showAccueil()">🏠 Accueil</button>
+            <button onclick="UI.showProprietes()">🏡 Immobilier</button>
+            <button onclick="UI.showEntreprises()">🏢 Entreprises</button>
+            <button onclick="UI.showBourse()">📈 Bourse</button>
+            <button onclick="UI.showBanque()">🏦 Banque</button>
+            <button onclick="UI.showPolitique()">⚖️ Politique</button>
+            <button onclick="UI.showCasino()">🎰 Casino</button>
+            <button onclick="UI.showClassements()">🏆 Classements</button>
+            <button onclick="UI.showChat()">💬 Chat</button>
+            <button onclick="UI.showProfil()">👤 Profil</button>
+        </nav>
+    </header>
+
+    <!-- ========================= CONTENEUR PRINCIPAL =========================== -->
+    <main id="container" class="center-box">
+
+        <!-- =============== LOGIN PAGE ================= -->
+        <section class="card" id="loginPage">
+            <h2>🔑 Connexion</h2>
+
+            <input id="emailInput" type="email" placeholder="Email (identifiant)">
+            <input id="usernameInput" type="text" placeholder="Nom du joueur">
+
+            <button id="loginBtn" class="btn full">Connexion / Création de compte</button>
+            <button id="googleLoginBtn" class="btn alt full">Connexion Google</button>
+
+            <p class="small">Vos données sont sauvegardées de manière sécurisée.</p>
+        </section>
+
+        <!-- =============== PLAYER PAGE ================= -->
+        <section class="card hidden" id="playerCard">
+            <h2>📊 Informations du Joueur</h2>
+
+            <p><b>Email :</b> <span id="emailDisplay"></span></p>
+            <p><b>Nom :</b> <span id="usernameDisplay"></span></p>
+            <p><b>Patrimoine total :</b> <span id="capitalDisplay"></span> §</p>
+            <p><b>Liquidités :</b> <span id="liquiditeDisplay"></span> §</p>
+            <p><b>Biens immobiliers :</b> <span id="nbBiensDisplay"></span></p>
+            <p><b>Entreprises :</b> <span id="nbEntreprisesDisplay"></span></p>
+
+            <button class="btn logout full" onclick="App.logout()">Se déconnecter</button>
+        </section>
+
+        <!-- =============== CONTENU DYNAMIQUE ================= -->
+        <section id="content" class="card hidden">
+            <h2>Bienvenue dans Empire des Finances</h2>
+            <p>Connectez-vous pour bâtir votre empire.</p>
+        </section>
+
+        <!-- =============== IMMOBILIER ================= -->
+        <section id="proprietesPage" class="hidden">
+            <div class="subnav">
+                <button class="sub-btn" onclick="UI.showAcheter()">Acheter</button>
+                <button class="sub-btn" onclick="UI.showGerer()">Gérer</button>
+                <button class="sub-btn" onclick="UI.showLocations()">Locations</button>
+                <button class="sub-btn" onclick="UI.showConstruction()">Construction</button>
+            </div>
+
+            <div id="acheterSection"></div>
+            <div id="gererSection" class="hidden"></div>
+            <div id="locationSection" class="hidden"></div>
+            <div id="constructionSection" class="hidden"></div>
+        </section>
+
+        <!-- =============== ENTREPRISES ================= -->
+        <section id="entreprisesPage" class="hidden">
+            <div class="subnav">
+                <button class="sub-btn" onclick="UI.showCreerEntreprise()">Créer</button>
+                <button class="sub-btn" onclick="UI.showGererEntreprises()">Gérer</button>
+                <button class="sub-btn" onclick="UI.showEmployes()">Employés</button>
+                <button class="sub-btn" onclick="UI.showR&D()">R&D</button>
+            </div>
+
+            <div id="entrepriseCreate"></div>
+            <div id="entrepriseManage" class="hidden"></div>
+            <div id="entrepriseEmployees" class="hidden"></div>
+            <div id="entrepriseRD" class="hidden"></div>
+        </section>
+
+        <!-- =============== BOURSE ================= -->
+        <section id="boursePage" class="hidden">
+            <h2>📈 Marchés Financiers</h2>
+            <div id="marketOverview"></div>
+            <div id="portfolio"></div>
+            <div id="marketHistory"></div>
+        </section>
+
+        <!-- =============== BANQUE ================= -->
+        <section id="banquePage" class="hidden">
+            <div class="subnav">
+                <button class="sub-btn" onclick="UI.showCompteCourant()">Compte courant</button>
+                <button class="sub-btn" onclick="UI.showEpargne()">Épargne</button>
+                <button class="sub-btn" onclick="UI.showEmprunts()">Emprunts</button>
+                <button class="sub-btn" onclick="UI.showInvestissements()">Investissements</button>
+            </div>
+
+            <div id="banqueCourant"></div>
+            <div id="banqueEpargne" class="hidden"></div>
+            <div id="banqueEmprunts" class="hidden"></div>
+            <div id="banqueInvest" class="hidden"></div>
+        </section>
+
+        <!-- =============== POLITIQUE ================= -->
+        <section id="politiquePage" class="hidden">
+            <div id="lois"></div>
+            <div id="influence"></div>
+            <div id="elections"></div>
+        </section>
+
+        <!-- =============== CASINO ================= -->
+        <section id="casinoPage" class="hidden">
+            <h2>🎰 Casino</h2>
+            <div class="subnav">
+                <button class="sub-btn" onclick="UI.showBlackjack()">Blackjack</button>
+                <button class="sub-btn" onclick="UI.showRoulette()">Roulette</button>
+                <button class="sub-btn" onclick="UI.showSlots()">Machine à sous</button>
+                <button class="sub-btn" onclick="UI.showParis()">Paris sportifs</button>
+            </div>
+
+            <div id="casinoBlackjack"></div>
+            <div id="casinoRoulette" class="hidden"></div>
+            <div id="casinoSlots" class="hidden"></div>
+            <div id="casinoParis" class="hidden"></div>
+        </section>
+
+        <!-- =============== CLASSEMENTS ================= -->
+        <section id="classementsPage" class="hidden">
+            <h2>🏆 Classements</h2>
+            <div id="topRiches"></div>
+            <div id="topImmobilier"></div>
+            <div id="topEntreprises"></div>
+            <div id="topBourse"></div>
+        </section>
+
+        <!-- =============== PROFIL ================= -->
+        <section id="profilPage" class="card hidden">
+            <h2>👤 Profil du joueur</h2>
+            <div id="profileInfo"></div>
+            <div id="statsPlayer"></div>
+            <div id="achievements"></div>
+            <button class="btn alt full" onclick="UI.editProfil()">Modifier le profil</button>
+        </section>
+
+        <!-- =============== CHAT ================= -->
+        <section id="chatPage" class="hidden">
+            <h2>💬 Chat Global</h2>
+
+            <div id="chatContainer">
+                <div id="chatMessages"></div>
+
+                <div id="chatInput">
+                    <input id="chatMsg" type="text" placeholder="Message...">
+                    <button onclick="Chat.sendMessage()">Envoyer</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================= SCRIPTS =========================== -->
+
+    <!-- Firebase -->
+    <script type="module" src="assets/js/firebase.js"></script>
+
+    <!-- Core App -->
+    <script type="module" src="assets/js/app.js"></script>
+
+    <!-- Modules UI / Player / Economy -->
+    <script type="module" src="assets/js/ui.js"></script>
+    <script type="module" src="assets/js/player.js"></script>
+    <script type="module" src="assets/js/economy.js"></script>
+
+    <!-- Modules Fonctionnels -->
+    <script type="module" src="assets/js/realEstate.js"></script>
+    <script type="module" src="assets/js/bank.js"></script>
+    <script type="module" src="assets/js/bourse.js"></script>
+    <script type="module" src="assets/js/entreprises.js"></script>
+    <script type="module" src="assets/js/politique.js"></script>
+    <script type="module" src="assets/js/casino.js"></script>
+    <script type="module" src="assets/js/chat.js"></script>
+    <script type="module" src="assets/js/classements.js"></script>
+    <script type="module" src="assets/js/profil.js"></script>
+
 </body>
+
 </html>
