@@ -1,144 +1,237 @@
-/* ================================================
-   style.css — Design ultra noble Empire des Finances
-   Couleurs : vert sinople, blanc, doré, élégant et harmonieux
-   ================================================ */
+/* ----------------------------------------------------------
+   EMPIRE DES FINANCES — THEME PREMIUM NOBLE BUSINESS
+   Version : PRO — Luxe + Modern Business
+-----------------------------------------------------------*/
 
-/* ==== RESET ==== */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Libre Caslon Text', serif; }
-body { background-color: #f0f4f2; color: #1b1b1b; }
+:root {
+  /* ---- Couleurs nobles ---- */
+  --brun-fonce: #3b2f2f;
+  --brun-clair: #4a3b3b;
+  --ivoire: #f9f1e7;
+  --ivoire-soft: #fff8ef;
 
-/* ==== HEADER ==== */
+  /* ---- Couleurs modern business ---- */
+  --bleu-nuit: #1d2a3a;
+  --bleu-profond: #24364c;
+
+  /* ---- Accents or ---- */
+  --or-mat: #c89f50;
+  --or-brillant: #e2bf6c;
+  --or-intense: #b98b34;
+
+  /* ---- UI ---- */
+  --radius: 18px;
+  --radius-big: 26px;
+  --shadow: 0 12px 30px rgba(0,0,0,0.35);
+  --shadow-soft: 0 8px 18px rgba(0,0,0,0.22);
+}
+
+/* ----------------------------------------------------------
+   GLOBAL
+-----------------------------------------------------------*/
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Georgia", "Times New Roman", serif;
+}
+
+body {
+  background: linear-gradient(180deg, var(--bleu-nuit), var(--brun-fonce));
+  padding: 30px;
+  color: var(--brun-fonce);
+}
+
+/* Classe utilitaire */
+.hidden {
+  display: none !important;
+}
+
+/* ----------------------------------------------------------
+   HEADER PREMIUM
+-----------------------------------------------------------*/
 header {
-  background: linear-gradient(90deg, #1b4f36, #2a6f4e);
-  color: #fff;
-  padding: 25px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
-  border-bottom: 4px solid #d4af37;
+  background: var(--bleu-profond);
+  color: white;
+  padding: 18px 28px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 25px;
 }
-header h1 { font-size: 2rem; font-weight: bold; letter-spacing: 1px; }
-header button {
-  background-color: #d4af37;
-  color: #1b4f36;
-  border: none;
-  padding: 12px 25px;
-  border-radius: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-header button:hover { background-color: #b9972f; }
 
-/* ==== LOGIN / REGISTER ==== */
-.login-container {
-  max-width: 450px;
-  margin: 100px auto;
-  background-color: #fff;
-  padding: 40px;
-  border-radius: 25px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-  border-top: 6px solid #d4af37;
+.header-left {
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
-.login-container h1, .login-container h2 { text-align: center; margin-bottom: 25px; color: #1b4f36; }
-.login-container input {
-  width: 100%;
-  padding: 15px;
+
+.menu {
+  display: flex;
+  gap: 12px;
+}
+
+/* NAV BUTTON PREMIUM */
+.menu button {
+  background: var(--or-mat);
+  color: white;
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.25s;
+  box-shadow: var(--shadow-soft);
+}
+
+.menu button:hover {
+  background: var(--or-intense);
+  transform: translateY(-3px);
+}
+
+/* ----------------------------------------------------------
+   CARD PREMIUM
+-----------------------------------------------------------*/
+.card {
+  background: var(--ivoire);
+  padding: 28px;
+  border-radius: var(--radius-big);
+  box-shadow: var(--shadow);
+  border: 2px solid var(--or-brillant);
   margin-bottom: 20px;
-  border-radius: 12px;
-  border: 1px solid #ccc;
+  transition: 0.3s;
 }
-.login-container button {
-  width: 100%;
-  padding: 15px;
-  border-radius: 12px;
-  border: none;
-  background-color: #2a6f4e;
-  color: #fff;
-  font-weight: bold;
-  font-size: 1.1rem;
-  cursor: pointer;
-}
-.login-container button:hover { background-color: #1b4f36; }
 
-/* ==== DASHBOARD ==== */
-.dashboard {
-  max-width: 1250px;
-  margin: 50px auto;
-  padding: 30px;
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 35px rgba(0,0,0,0.40);
+}
+
+/* ----------------------------------------------------------
+   BUTTONS PRO
+-----------------------------------------------------------*/
+.btn {
+  padding: 12px 22px;
+  border-radius: var(--radius);
+  background: var(--or-mat);
+  border: none;
+  color: white;
+  font-size: 17px;
+  cursor: pointer;
+  transition: 0.25s;
+  font-weight: bold;
+  box-shadow: inset 0 0 0 2px var(--or-brillant);
+}
+
+.btn:hover {
+  background: var(--or-intense);
+  transform: translateY(-3px);
+}
+
+.btn.alt {
+  background: var(--bleu-profond);
+  box-shadow: inset 0 0 0 2px var(--or-brillant);
+}
+
+.btn.alt:hover {
+  background: var(--bleu-nuit);
+}
+
+/* FULL WIDTH */
+.full {
+  width: 100%;
+}
+
+/* BUTTON DANGER */
+.btn.logout {
+  background: #8a3a3a;
+}
+
+.btn.logout:hover {
+  background: #712c2c;
+}
+
+/* ----------------------------------------------------------
+   INPUTS PRO
+-----------------------------------------------------------*/
+input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: var(--radius);
+  border: 2px solid var(--or-brillant);
+  background: var(--ivoire-soft);
+  margin: 12px 0;
+  font-size: 16px;
+  transition: 0.25s;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--or-mat);
+  background: white;
+}
+
+/* ----------------------------------------------------------
+   GRID (biens, entreprises, etc.)
+-----------------------------------------------------------*/
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* ----------------------------------------------------------
+   CHAT PREMIUM
+-----------------------------------------------------------*/
+#chatContainer {
+  background: var(--ivoire-soft);
+  border-radius: var(--radius-big);
+  border: 2px solid var(--or-brillant);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 40px;
 }
-.stats {
+
+#chatMessages {
+  padding: 15px;
+  background: #f4e8d6;
+  flex: 1;
+  overflow-y: auto;
+}
+
+#chatMessages p b {
+  color: var(--bleu-profond);
+}
+
+#chatInput {
   display: flex;
-  gap: 50px;
-  justify-content: space-around;
-  background-color: #eaf3ec;
-  padding: 25px;
-  border-radius: 25px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-  border-left: 6px solid #d4af37;
+  border-top: 2px solid var(--or-brillant);
 }
-.stats p { font-size: 1.3rem; font-weight: bold; color: #1b4f36; }
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 25px;
-  justify-content: center;
-}
-.actions button {
-  padding: 18px 30px;
-  border-radius: 20px;
+
+#chatInput input {
+  border-radius: 0;
   border: none;
-  background-color: #2a6f4e;
-  color: #fff;
-  font-weight: bold;
-  font-size: 1.1rem;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-.actions button:hover { background-color: #1b4f36; }
-
-/* ==== PANELS ==== */
-section { background-color: #fff; padding: 30px; border-radius: 25px; box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
-.hidden { display: none; }
-
-/* ==== ENTREPRISES ==== */
-.entreprise-panel button, .entreprise-item button {
-  padding: 12px 25px;
-  border-radius: 15px;
-  border: none;
-  background-color: #2a6f4e;
-  color: #fff;
-  font-weight: bold;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-top: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-.entreprise-panel button:hover, .entreprise-item button:hover { background-color: #1b4f36; }
-.entreprise-item {
-  background-color: #f5faf5;
-  padding: 20px;
-  margin-bottom: 15px;
-  border-radius: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-  border-left: 6px solid #d4af37;
-}
-.details-entreprise p { margin-bottom: 12px; color: #1b4f36; }
-.details-entreprise button { margin-right: 12px; }
-
-/* ==== RESPONSIVE ==== */
-@media(max-width: 768px){
-  .stats { flex-direction: column; gap: 25px; }
-  .actions { flex-direction: column; gap: 20px; }
-  .entreprise-item { flex-direction: column; align-items: flex-start; }
+  background: white;
 }
 
-/* ==== EFFETS ==== */
-button, input { transition: all 0.3s ease; }
+#chatInput button {
+  border-radius: 0;
+  background: var(--or-mat);
+}
+
+/* ----------------------------------------------------------
+   RESPONSIVE
+-----------------------------------------------------------*/
+@media (max-width: 900px) {
+  .menu {
+    flex-wrap: wrap;
+  }
+
+  header {
+    flex-direction: column;
+    gap: 14px;
+  }
+}
+
